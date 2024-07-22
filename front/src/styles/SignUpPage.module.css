@@ -1,0 +1,74 @@
+* {
+
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.PageContainer {
+    width: 100vw;
+    height: 100vh;
+    background-color: pink;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.cardSignUp {
+
+    width: 30vw;
+    height: auto;
+    background-color: white;
+    padding-bottom: 20px;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+}
+
+.formField {
+    width: 90%;
+    height: 80px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.formField input {
+    border-radius: 5px;
+    width: 100%;
+    height: 80%;
+    padding: 10px;
+    font-size: 20px;
+}
+
+.formField label {
+    font-size: 20px;
+    font-weight: bold;
+    align-self: flex-start;
+
+}
+
+.cardSignUp button {
+    margin-top: 20px;
+    width: 90%;
+    height: 50px;
+    border-radius: 25px;
+    font-size: 25px;
+    background-color: blue;
+    color: white;
+
+}
+
+.formField input::placeholder {
+    font-size: 20px;
+}
+
+.errorLine {
+    display: none;
+    margin-left: 5%;
+    align-self: flex-start;
+    color: red;
+}

@@ -1,0 +1,33 @@
+* {
+
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.PageContainer {
+    width: 100vw;
+    height: 100vh;
+    background-color: blue;
+    display: flex;
+
+}
+
+.leftSide {
+    width: 25%;
+    background-color: black;
+
+}
+
+
+.middleSide {
+    width: 50%;
+    background-color: yellow;
+
+}
+
+.rightSide {
+    width: 25%;
+    background-color: red;
+
+}

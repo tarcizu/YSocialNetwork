@@ -8,7 +8,7 @@
 .PageContainer {
     width: 100vw;
     height: 100vh;
-    background-color: pink;
+    background-color: var(--ThemeColor);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -19,13 +19,19 @@
 
     width: 30vw;
     height: auto;
-    background-color: white;
+    background-color: var(--ThemeColor);
     padding-bottom: 20px;
+    border: 1px solid var(--ContentColor);
     align-items: center;
     display: flex;
     flex-direction: column;
     gap: 10px;
 
+}
+
+.cardSignUp h1,
+p {
+    color: var(--ContentColor);
 }
 
 .formField {
@@ -42,12 +48,15 @@
     height: 80%;
     padding: 10px;
     font-size: 20px;
+    color: var(--ContentColor);
+    background-color: var(--ThemeColor);
 }
 
 .formField label {
     font-size: 20px;
     font-weight: bold;
     align-self: flex-start;
+    color: var(--ContentColor);
 
 }
 
@@ -64,6 +73,7 @@
 
 .formField input::placeholder {
     font-size: 20px;
+    color: var(--ContentColor);
 }
 
 .errorLine {

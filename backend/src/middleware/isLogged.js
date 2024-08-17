@@ -11,18 +11,19 @@ async function isLogged(request, response, next) {
     if (access_token && session_token) {
         await jwt.verify(access_token, process.env.TOKENPASSWORD, (error, decoded) => {
             if (error) {
-                console.log("Error ao verificar o Access Token");
-                response.sendStatus(401).end();
+                console.log("Falha ao autenticar usuário: Access Token invalido");
+                return response.sendStatus(401);
             }
 
             request.body.id = decoded.id;
             jwt.verify(session_token, process.env.TOKENPASSWORD, (error, decoded) => {
                 if (error) {
-                    console.log("Error ao verificar o Session Token");
-                    response.sendStatus(401).end();
+                    console.log("Falha ao autenticar usuário: Session Token invalido");
+                    return response.sendStatus(401);
                 }
 
 
+                console.log(`Usuário autenticado com sucesso: ID ${request.body.id}`);
                 next();
             })
 
@@ -30,9 +31,9 @@ async function isLogged(request, response, next) {
         })
 
     } else {
-        console.log("Respondeu o 401");
+        console.log("Falha ao autenticar usuário: Error Desconhecido");
 
-        response.sendStatus(401).end();
+        return response.sendStatus(401);
     }
 
 

@@ -1,6 +1,6 @@
 'use strict';
 
-const { createHash } = require('../../controllers/hashCrontroller');
+const { createHash } = require('../../controllers/hashController');
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {

@@ -6,14 +6,14 @@
 }
 
 
+
 .PageContainer {
     width: 100vw;
     height: 100vh;
-    background-color: red;
+    background-color: var(--ThemeColor);
     display: flex;
     justify-content: center;
     align-items: center;
-
 }
 
 .cardLogin {
@@ -21,12 +21,18 @@
     width: 30vw;
     height: auto;
     padding-bottom: 20px;
-    background-color: white;
+    background-color: var(--ThemeColor);
+    border: 1px solid var(--ContentColor);
     align-items: center;
     display: flex;
     flex-direction: column;
     gap: 10px;
 
+}
+
+.cardLogin h1,
+p {
+    color: var(--ContentColor);
 }
 
 .formField {
@@ -35,9 +41,6 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-
-
-
 }
 
 .formField input {
@@ -46,12 +49,16 @@
     height: 80%;
     padding: 10px;
     font-size: 20px;
+    color: var(--ContentColor);
+    background-color: var(--ThemeColor);
 }
+
 
 .formField label {
     font-size: 20px;
     font-weight: bold;
     align-self: flex-start;
+    color: var(--ContentColor);
 
 }
 
@@ -67,6 +74,7 @@
 
 .formField input::placeholder {
     font-size: 20px;
+    color: var(--ContentColor);
 }
 
 .keepSignedIn {
@@ -75,6 +83,11 @@
     align-self: flex-start;
     gap: 5px;
     font-size: 18px;
+}
+
+.keepSignedIn label {
+
+    color: var(--ContentColor);
 }
 
 .errorLine {

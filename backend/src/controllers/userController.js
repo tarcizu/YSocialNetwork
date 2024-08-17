@@ -1,6 +1,6 @@
 const createUserService = require('../services/users/createUserService');
 const findUserService = require('../services/users/findUserService');
-const { createHash, validateHash } = require('./hashCrontroller');
+const { createHash, validateHash } = require('./hashController');
 const { createCookie, createToken } = require('./jwtController');
 
 

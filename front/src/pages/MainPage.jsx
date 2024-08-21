@@ -6,6 +6,13 @@ import cookies from 'js-cookie';
 import { FaSignOutAlt, FaUser, FaLightbulb, FaRegLightbulb, FaHome, FaHeart, FaBookmark } from 'react-icons/fa'
 import Post from "../components/Post";
 import createUser from "../models/User";
+import LoadingCircle from "../components/LoadingCircle";
+import createPost from "../models/Post";
+import PostField from "../components/PostField";
+import { auth } from "../services/auth/authService";
+import { getPosts } from "../services/post/getPostsService";
+import { logout } from "../controlller/logoutController";
+import { changeTheme, setInitialTheme } from "../controlller/themeController";
 
 
 
@@ -15,7 +22,20 @@ export default function MainPage() {
     const [currentPage, setCurrentPage] = useState('home');
     const [pageContent, setPageContent] = useState(null);
     const [user, setUser] = useState(null);
-    const [posts, setPosts] = useState([]);
+    const [posts, setPosts] = useState(null);
+    const [forceUpdateTrigger, setForceUpdateTrigger] = useState(0);
+    const [forceReloadTrigger, setForceReloadTrigger] = useState(0);
+
+    const forceUpdate = () => {
+        setForceUpdateTrigger(forceUpdateTrigger + 1);
+    }
+    const changePage = async (page) => {
+
+        if (page) {
+            setCurrentPage(page);
+        }
+        forceUpdate();
+    };
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -28,125 +48,115 @@ export default function MainPage() {
     const handleLogOut = (e) => {
         e.preventDefault();
         console.log("Usuário Realizou Logout");
+        logout(navigate);
+    };
 
-        cookies.remove('access_token');
-
-        navigate("/login", { replace: true });
-
-    }
     const handleChangeTheme = (e) => {
         e.preventDefault();
-        const element = document.getElementsByClassName('theme')[0];
+        changeTheme(document.getElementsByClassName('theme')[0]);
 
-        if (localStorage.getItem("theme") === "light" || localStorage.getItem("theme") === null) {
-            element.style.setProperty('--ThemeColor', 'black');
-            element.style.setProperty('--ContentColor', 'white');
-            localStorage.setItem("theme", "dark");
-            console.log("Tema alterado: Dark");
-
-        } else {
-            element.style.setProperty('--ThemeColor', 'white');
-            element.style.setProperty('--ContentColor', 'black');
-            localStorage.setItem("theme", "light");
-            console.log("Tema alterado: Light");
-        }
-        setTheme(localStorage.getItem("theme"));
     }
 
 
     useEffect(() => {
-        (async () => {
 
+
+
+
+        (async () => {
 
             if (location.state) {
                 access_token.current = location.state.access_token;
             } else {
                 access_token.current = cookies.get('access_token');
             }
-            try {
-                const res = await fetch(process.env.REACT_APP_APIURL + "/auth", {
-                    method: "POST",
-                    credentials: "include",
-                    body: JSON.stringify({ access_token: access_token.current }),
-                    headers: { "Content-Type": "application/json" }
-                });
-
-                if (res.ok) {
-                    setUser(createUser(await res.json()));
-                    console.log("Usuário Autenticado");
-                } else if (res.status === 401) {
-                    console.log("Usuário não Autenticado: Erro 401");
-                    cookies.remove('access_token');
-                    navigate("/login");
-                }
-            } catch (error) {
-                console.log(error);
+            const result = await auth(access_token.current);
+            if (result === -1) {
+                console.log("Usuário não Autenticado: Erro Desconhecido");
+            } else if (result === -2) {
+                console.log("Usuário não Autenticado: Erro 401");
+                logout(navigate);
+            } else {
+                setUser(createUser(result));
+                console.log("Usuário Autenticado");
             }
         })();
-        const element = document.getElementsByClassName('theme')[0];
-        if (localStorage.getItem("theme") === "light" || localStorage.getItem("theme") === null) {
-            element.style.setProperty('--ThemeColor', 'white');
-            element.style.setProperty('--ContentColor', 'black');
 
-        } else {
-            element.style.setProperty('--ThemeColor', 'black');
-            element.style.setProperty('--ContentColor', 'white');
-        }
+        setInitialTheme(document.getElementsByClassName('theme')[0]);
+
+
+
+
     }, [])
 
 
 
     useEffect(() => {
+
+
         (async () => {
-            try {
-                const res = await fetch(process.env.REACT_APP_APIURL + "/posts", {
-                    method: "POST",
-                    credentials: "include",
-                    body: JSON.stringify({ access_token: access_token.current }),
-                    headers: { "Content-Type": "application/json" }
-                });
-
-                if (res.ok) {
-                    setPosts(await res.json());
 
 
+            if (currentPage === 'profile') {
 
-                } else if (res.status === 401) {
+                setPosts(null);
+                const result = await getPosts(access_token.current);
+                if (result === -1) {
+                    console.log("Usuário não Autenticado: Erro Desconhecido");
+                } else if (result === -2) {
                     console.log("Usuário não Autenticado: Erro 401");
-                    cookies.remove('access_token');
-                    navigate("/login");
+                    logout(navigate);
+                } else {
+                    setPosts(result);
+
                 }
-            } catch (error) {
-                console.log(error);
             }
+
+
+            setForceReloadTrigger(forceReloadTrigger + 1);
+
+
         })();
 
-    }, [currentPage === 'profile'])
+
+
+    }, [forceUpdateTrigger])
 
 
     useEffect(() => {
+
 
         switch (currentPage) {
             case 'home':
                 setPageContent(
                     <>
-                        <h1>Timeline</h1>
+                        <PostField key={1} changePage={changePage} access_token={access_token.current} navigate={navigate} />
+                        <div className={styles.emptyList}>
+                            <FaHome className={styles.emptyListIcon} />
+                            <span>Sua timeline está vazia. Comece a seguir pessoas e interagir para ver atualizações e postagens aqui!</span>
+                        </div>
                     </>
                 );
                 break;
             case 'profile':
-                console.log(posts);
 
                 setPageContent(
                     <>
-                        {posts ? posts.map(post => (<Post username={post.user.username}>{post.content}</Post>)) : <div className={styles.loadingCircle}></div>}
+                        <PostField key={2} changePage={changePage} access_token={access_token.current} navigate={navigate} />
+                        {posts ? posts.length !== 0 ? posts.map(post => (<Post post={createPost(post, access_token)} />)) : <div className={styles.emptyList}>
+                            <FaUser className={styles.emptyListIcon} />
+                            <span>Seu perfil ainda não tem postagens. Comece a compartilhar conteúdo para que suas postagens apareçam aqui!</span>
+                        </div> : <div className={styles.loadingCircle}></div>}
                     </>
                 );
                 break;
             case 'likes':
                 setPageContent(
                     <>
-                        <h1>Itens Curtidos</h1>
+                        <div className={styles.emptyList}>
+                            <FaHeart className={styles.emptyListIcon} />
+                            <span>Você ainda não curtiu nenhuma postagem. Quando você começar a curtir, elas aparecerão aqui!</span>
+                        </div>
 
                     </>
                 );
@@ -154,7 +164,10 @@ export default function MainPage() {
             case 'saved':
                 setPageContent(
                     <>
-                        <h1>Itens Salvos</h1>
+                        <div className={styles.emptyList}>
+                            <FaBookmark className={styles.emptyListIcon} />
+                            <span>Você ainda não salvou nenhuma postagem. Quando você salvar algo, suas postagens favoritas aparecerão aqui!</span>
+                        </div>
 
                     </>
                 );
@@ -164,7 +177,7 @@ export default function MainPage() {
         }
 
 
-    }, [currentPage])
+    }, [forceReloadTrigger])
 
     return (user ? <>
 
@@ -188,42 +201,46 @@ export default function MainPage() {
                                 <span><b>{user.following}</b> Seguindo <b>{user.followers}</b> Seguidores</span>
                             </div>
                         </div>
-                        <div className={styles.MenuLeft}>
+                        <div className={styles.menuLeftContainer}>
+                            <div className={styles.menuLeft}>
 
-                            <div className={styles.MenuOption} onClick={() => setCurrentPage('home')}>
-                                <FaHome className={styles.icon} />
-                                <span>Home</span>
-                            </div>
-                            <div className={styles.MenuOption} onClick={() => setCurrentPage('profile')}>
-                                <FaUser className={styles.icon} />
-                                <span>Perfil</span>
-                            </div>
-                            <div className={styles.MenuOption} onClick={() => setCurrentPage('likes')}>
-                                <FaHeart className={styles.icon} />
-                                <span>Curtidos</span>
-                            </div>
-                            <div className={styles.MenuOption} onClick={() => setCurrentPage('saved')}>
-                                <FaBookmark className={styles.icon} />
-                                <span>Salvos</span>
-                            </div>
-                            {theme === "light" || theme === null ? <>
-                                <div className={styles.MenuOption} onClick={handleChangeTheme}>
-                                    <FaLightbulb className={styles.icon} />
-                                    <span>Modo Escuro</span>
+
+
+                                <div className={styles.MenuOption} onClick={() => changePage('home')}>
+                                    <FaHome className={styles.icon} />
+                                    <span>Home</span>
                                 </div>
-                            </> : <>
-                                <div className={styles.MenuOption} onClick={handleChangeTheme}>
-                                    <FaRegLightbulb className={styles.icon} />
-                                    <span>Modo Claro</span>
+                                <div className={styles.MenuOption} onClick={() => changePage('profile')}>
+                                    <FaUser className={styles.icon} />
+                                    <span>Perfil</span>
                                 </div>
-                            </>}
-                            <div className={styles.MenuOption} onClick={handleLogOut}>
-                                <FaSignOutAlt className={styles.icon} />
-                                <span>Logout</span>
+                                <div className={styles.MenuOption} onClick={() => changePage('likes')}>
+                                    <FaHeart className={styles.icon} />
+                                    <span>Curtidos</span>
+                                </div>
+                                <div className={styles.MenuOption} onClick={() => changePage('saved')}>
+                                    <FaBookmark className={styles.icon} />
+                                    <span>Salvos</span>
+                                </div>
+                                {theme === "light" || theme === null ? <>
+                                    <div className={styles.MenuOption} onClick={handleChangeTheme}>
+                                        <FaLightbulb className={styles.icon} />
+                                        <span>Modo Escuro</span>
+                                    </div>
+                                </> : <>
+                                    <div className={styles.MenuOption} onClick={handleChangeTheme}>
+                                        <FaRegLightbulb className={styles.icon} />
+                                        <span>Modo Claro</span>
+                                    </div>
+                                </>}
+                                <div className={styles.MenuOption} onClick={handleLogOut}>
+                                    <FaSignOutAlt className={styles.icon} />
+                                    <span>Logout</span>
+                                </div>
+
+
+
                             </div>
-
-
-
                         </div>
                     </div>
                     <div className={styles.middleSide}>
@@ -240,8 +257,8 @@ export default function MainPage() {
         </div>
     </> : <>
         <div className='theme'>
-            <div className={styles.loadingCircle}></div>
-        </div>
+            <LoadingCircle />
+        </div >
     </>
 
 

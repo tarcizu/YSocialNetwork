@@ -21,20 +21,18 @@ async function findAllPostsbyID(id) {
                 },
                 {
                     model: User,
-                    attributes: ['username', 'id']
+                    attributes: ['id', 'username', 'name', 'lastname', 'avatar']
                 }
             ],
-            attributes: ['id', 'content', 'image', 'createdAt', 'updatedAt'],
+            attributes: ['id', 'content', 'image', 'createdAt'],
+            order: [['createdAt', 'DESC']]
         });
 
         if (result) {
-            console.log("Retornou algo");
-
 
             return result;
         }
         else {
-            console.log("Retornou porra nenhuma");
             return -2;
         }
 

@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import '../index.css'
 import styles from '../styles/SignUpPage.module.css'
-import { signup } from '../services/database'
+import { signup } from '../services/login/signUpService'
 import { Link, useNavigate } from "react-router-dom";
+import { setInitialTheme } from "../controlller/themeController";
 
 
 
@@ -69,20 +70,8 @@ export default function SignUpPage() {
 
     useEffect(() => {
 
-        const element = document.getElementsByClassName('theme')[0];
-        if (element) {
 
-            if (localStorage.getItem("theme") === "light" || localStorage.getItem("theme") === null) {
-                element.style.setProperty('--ThemeColor', 'white');
-                element.style.setProperty('--ContentColor', 'black');
-            } else {
-
-                element.style.setProperty('--ThemeColor', 'black');
-                element.style.setProperty('--ContentColor', 'white');
-            }
-
-
-        }
+        setInitialTheme(document.getElementsByClassName('theme')[0])
 
     }, [])
 
@@ -121,7 +110,7 @@ export default function SignUpPage() {
                     </div>
                     <p className={styles.errorLine} id="errorLinePassword">{errorMessage}</p>
                     <button type="submit">Cadastrar</button>
-                    <p>Já tem uma conta no Y? <Link to="/login">Entre agora mesmo</Link></p>
+                    <p>Já tem uma conta no Y? <Link className={styles.link} to="/login">Entre agora mesmo</Link></p>
                 </form>
             </div>
         </div>

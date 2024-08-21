@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import '../index.css'
 import styles from '../styles/LoginPage.module.css'
-import { login } from '../services/database'
+import { login } from '../services/login/loginService'
 import { Link, useNavigate } from "react-router-dom";
+import { setInitialTheme } from "../controlller/themeController";
 
 
 
@@ -58,20 +59,7 @@ export default function LoginPage() {
 
     useEffect(() => {
 
-        const element = document.getElementsByClassName('theme')[0];
-        if (element) {
-
-            if (localStorage.getItem("theme") === "light" || localStorage.getItem("theme") === null) {
-                element.style.setProperty('--ThemeColor', 'white');
-                element.style.setProperty('--ContentColor', 'black');
-            } else {
-
-                element.style.setProperty('--ThemeColor', 'black');
-                element.style.setProperty('--ContentColor', 'white');
-            }
-
-
-        }
+        setInitialTheme(document.getElementsByClassName('theme')[0]);
 
     }, [])
 
@@ -94,7 +82,7 @@ export default function LoginPage() {
                         <label htmlFor="keepSignedIn">Manter-me conectado</label>
                     </div>
                     <button type="submit">Entrar</button>
-                    <p>Ainda não tem uma conta no Y? <Link to="/signup">Cadastre-se</Link></p>
+                    <p>Ainda não tem uma conta no Y? <Link className={styles.link} to="/signup">Cadastre-se</Link></p>
                 </form>
             </div>
         </div>

@@ -1,4 +1,6 @@
+const Sequelize = require('sequelize');
 const User = require('../../data/models/User');
+const Follower = require('../../data/models/Followers');
 
 async function findUserbyUsername(username) {
     try {
@@ -17,8 +19,31 @@ async function findUserbyUsername(username) {
     }
 }
 async function findUserbyID(id) {
+
+
     try {
-        const result = await User.findByPk(id);
+        const result = await User.findByPk(id, {
+            attributes: {
+                include: [
+                    [
+                        Sequelize.literal(`(
+                            SELECT COUNT(*)
+                            FROM followers AS f
+                            WHERE f."followerID" = users.id
+                        )`),
+                        'followingCount'
+                    ],
+                    [
+                        Sequelize.literal(`(
+                            SELECT COUNT(*)
+                            FROM followers AS f
+                            WHERE f."followedID" = users.id
+                        )`),
+                        'followerCount'
+                    ]
+                ]
+            }
+        });
         if (result) {
             return result.dataValues;
         } else {

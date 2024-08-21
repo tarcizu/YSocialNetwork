@@ -67,8 +67,9 @@ p {
     width: 90%;
     height: 50px;
     border-radius: 25px;
+    border: 2px solid var(--ContentColor);
     font-size: 25px;
-    background-color: blue;
+    background-color: var(--ButtonColor);
     color: white;
 }
 
@@ -86,6 +87,7 @@ p {
 }
 
 .keepSignedIn label {
+    font-size: 20px;
 
     color: var(--ContentColor);
 }
@@ -95,4 +97,8 @@ p {
     margin-left: 5%;
     align-self: flex-start;
     color: red;
+}
+
+.link:visited {
+    color: blue;
 }

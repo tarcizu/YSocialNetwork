@@ -8,7 +8,6 @@ module.exports =
     "host": process.env.DB_HOST,
     "port": process.env.DB_PORT,
     "dialect": process.env.DB_DIALECT,
-    "logging": true,
     "seederStorage": 'sequelize'
   },
   "test": {
@@ -17,8 +16,7 @@ module.exports =
     "database": process.env.DB_NAME,
     "host": process.env.DB_HOST,
     "port": process.env.DB_PORT,
-    "dialect": process.env.DB_DIALECT,
-    "logging": true
+    "dialect": process.env.DB_DIALECT
   },
   "production": {
     "username": process.env.DB_USER,
@@ -26,7 +24,6 @@ module.exports =
     "database": process.env.DB_NAME,
     "host": process.env.DB_HOST,
     "port": process.env.DB_PORT,
-    "dialect": process.env.DB_DIALECT,
-    "logging": false
+    "dialect": process.env.DB_DIALECT
   }
 }

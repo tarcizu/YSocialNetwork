@@ -15,6 +15,7 @@ export async function signup(name, lastName, email, user, password) {
         })
         const data = await res.json();
         if (res.ok) {
+            sessionStorage.setItem("access_token", data.access_token);
             return data;
 
         }

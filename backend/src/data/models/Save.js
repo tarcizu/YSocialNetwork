@@ -1,10 +1,10 @@
 const Sequelize = require('sequelize');
 const database = require('../../db');
 const User = require('./User');
-const Source = require('./Source');
+const Post = require('./Post');
 
 
-const Post = database.define('posts', {
+const Save = database.define('saves', {
     id: {
         type: Sequelize.INTEGER,
         autoIncrement: true,
@@ -21,43 +21,36 @@ const Post = database.define('posts', {
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE'
     },
-    content: {
-        type: Sequelize.STRING(300),
-        allowNull: false
-    },
-    image: {
-        type: Sequelize.STRING(80),
-        allowNull: true
-    },
-    sourceID: {
+    postID: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-            model: 'sources',
+            model: 'posts',
             key: 'id'
         },
-        onUpdate: 'CASCADE'
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE'
     }
 
 
 })
 
 
-Post.belongsTo(Source, {
-    foreignKey: 'sourceID',
-    as: 'PostSource'
-});
-Post.belongsTo(User, {
+Save.belongsTo(User, {
     foreignKey: 'userID',
-    as: 'PostUser'
+    as: 'SaveUser'
 });
-Source.hasMany(Post, {
-    foreignKey: 'sourceID',
-    as: 'PostSource'
+Save.belongsTo(Post, {
+    foreignKey: 'postID',
+    as: 'SavePost'
 });
-User.hasMany(Post, {
+User.hasMany(Save, {
     foreignKey: 'userID',
-    as: 'PostUser'
+    as: 'SaveUser'
+});
+Post.hasMany(Save, {
+    foreignKey: 'postID',
+    as: 'SavePost'
 });
 
-module.exports = Post;
+module.exports = Save;

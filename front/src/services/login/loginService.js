@@ -36,6 +36,9 @@ export async function login(user, password, keepSignedIn) {
                 insertAccessCookie(data.access_token);
 
             }
+            else {
+                sessionStorage.setItem("access_token", data.access_token)
+            }
 
             return data;
 

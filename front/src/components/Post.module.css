@@ -10,6 +10,12 @@
     flex-direction: column;
 }
 
+.repost {
+
+    margin-left: 30px;
+    margin-bottom: 5px;
+}
+
 .header {
 
     display: flex;
@@ -38,8 +44,32 @@
     font-size: 18px;
 }
 
-.content {
+.LikeIcon {}
+
+.LikeSelectedIcon {
+    color: red;
+}
+
+.RepostIcon {
+    transform: scaleY(1.5);
+}
+
+.RepostSelectedIcon {
+    transform: scaleY(1.5);
+    color: rgb(0, 186, 124);
+}
+
+.SaveIcon {}
+
+.SaveSelectedIcon {
+    color: blue;
+}
+
+
+
+.content p {
     margin-left: 70px;
+    word-wrap: break-word;
 
     font-size: 25px;
     margin-bottom: 20px;

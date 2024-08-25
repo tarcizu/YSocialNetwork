@@ -10,11 +10,7 @@ function createUser(data) {
         avatar: data.avatar ? data.avatar : 'https://i.ibb.co/R03Zw8q/Male.png',
         following: data.followingCount,
         followers: data.followerCount,
-        createdData: data.createdAt,
-        createPost(content) {
-            console.log(`Usuario ${this.fullname} postou o seguinte: ${content}`);
-
-        }
+        createdData: data.createdAt
 
     }
 }

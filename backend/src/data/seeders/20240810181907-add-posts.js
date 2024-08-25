@@ -70,6 +70,46 @@ module.exports = {
         createdAt: new Date(),
         updatedAt: new Date()
       },
+      {
+        userID: 4,
+        content: 'O grande @DonaldTrump me segue! E aí, Nelipe Feto, vai me censurar aqui também? Boa sorte! Aqui é liberdade! #YLiberdadeCantou',
+        image: null,
+        sourceID: 1,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        userID: 4,
+        content: 'Quero informar os amigos que não faço mais parte de outra rede social que não Y. Sou grato por tudo que aprendi e pelas amizades que fiz.',
+        image: null,
+        sourceID: 1,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        userID: 5,
+        content: 'Tired of all the industry drama. Time to keep it real! Join me on Y for unfiltered Taylor. #NoMoreBS #TaylorOnY',
+        image: null,
+        sourceID: 1,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        userID: 5,
+        content: 'Thrilled to announce my next release with the amazing Brazilian band Lambasaia! Get ready! #TaylorXLambasaia #NewMusic',
+        image: null,
+        sourceID: 1,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        userID: 6,
+        content: '¡Y es un avance para la libertad! Aquí podemos hablar sin censura, a diferencia de otras plataformas. #LibertadDeExpresión #Y',
+        image: null,
+        sourceID: 1,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      }
 
     ], {});
 

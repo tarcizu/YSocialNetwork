@@ -22,28 +22,30 @@ async function findUserbyID(id) {
 
 
     try {
-        const result = await User.findByPk(id, {
-            attributes: {
-                include: [
-                    [
-                        Sequelize.literal(`(
+        const result = await User.findByPk(id,
+            {
+                attributes: {
+                    include:
+                        [
+                            [
+                                Sequelize.literal(`(
                             SELECT COUNT(*)
                             FROM followers AS f
                             WHERE f."followerID" = users.id
                         )`),
-                        'followingCount'
-                    ],
-                    [
-                        Sequelize.literal(`(
+                                'followingCount'
+                            ],
+                            [
+                                Sequelize.literal(`(
                             SELECT COUNT(*)
                             FROM followers AS f
                             WHERE f."followedID" = users.id
                         )`),
-                        'followerCount'
-                    ]
-                ]
-            }
-        });
+                                'followerCount'
+                            ]
+                        ]
+                }
+            });
         if (result) {
             return result.dataValues;
         } else {

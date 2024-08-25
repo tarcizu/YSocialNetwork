@@ -46,8 +46,7 @@ export default function LoginPage() {
             clearLogin();
         }
         else {
-            const { access_token } = result;
-            navigate('/home', { state: { access_token } });
+            navigate('/home');
 
         }
 

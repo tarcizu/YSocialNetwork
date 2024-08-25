@@ -21,7 +21,6 @@ async function createNewPost(userId, content, image, sourceId) {
 
 
     } catch (error) {
-        console.log(`Erro ao criar Postagem:\nCódigo: ${error.parent.code}\n${error.parent.detail}`);
         return -1;
 
     }

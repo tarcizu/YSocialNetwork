@@ -33,7 +33,7 @@ export function timeAgo(dbTimestamp) {
         return `${timeDifference} min atrás`
     }
     timeDifference = Math.floor(timeDifference / 60);
-    if (timeDifference < 60) {
+    if (timeDifference < 24) {
         return `${timeDifference} h atrás`
     }
     timeDifference = Math.floor(timeDifference / 24);

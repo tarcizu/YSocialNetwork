@@ -60,8 +60,7 @@ export default function SignUpPage() {
             containerErrorEmail.style.display = 'flex';
         }
         else {
-            const { access_token } = result;
-            navigate('/home', { state: { access_token } });
+            navigate('/home');
         }
 
 

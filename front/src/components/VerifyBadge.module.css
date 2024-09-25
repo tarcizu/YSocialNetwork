@@ -1,0 +1,21 @@
+.verifyIcon {
+    margin-top: 8px;
+    margin-left: 5px;
+}
+
+.level0 {
+    display: none;
+
+}
+
+.level1 {
+    color: blue;
+}
+
+.level2 {
+    color: grey;
+}
+
+.level3 {
+    color: gold;
+}

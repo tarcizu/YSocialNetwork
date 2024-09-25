@@ -72,7 +72,7 @@ module.exports = {
       },
       {
         userID: 4,
-        content: 'O grande @DonaldTrump me segue! E aí, Nelipe Feto, vai me censurar aqui também? Boa sorte! Aqui é liberdade! #YLiberdadeCantou',
+        content: 'O grande @dtrump me segue! E aí, Nelipe Feto, vai me censurar aqui também? Boa sorte! Aqui é liberdade! #YLiberdadeCantou',
         image: null,
         sourceID: 1,
         createdAt: new Date(),

@@ -7,6 +7,7 @@ import LoginPage from './pages/LoginPage';
 import MainPage from './pages/MainPage';
 import ErrorPage from './pages/ErrorPage';
 import SignUpPage from './pages/SignUpPage';
+import ProfilePage from './pages/ProfilePage';
 
 
 const router = createBrowserRouter([
@@ -30,6 +31,14 @@ const router = createBrowserRouter([
   {
     path: "/signup",
     element: <SignUpPage />
+  },
+  {
+    path: "/profile/:username",
+    element: <ProfilePage />
+  },
+  {
+    path: "/404",
+    element: <ErrorPage />
   }
 
 

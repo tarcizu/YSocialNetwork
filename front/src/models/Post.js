@@ -20,7 +20,8 @@ function createPost(data, access_token) {
             id: data.RepostPost.PostUser.id,
             username: data.RepostPost.PostUser.username,
             fullname: `${data.RepostPost.PostUser.name} ${data.RepostPost.PostUser.lastname}`,
-            avatar: data.RepostPost.PostUser.avatar ? data.RepostPost.PostUser.avatar : 'https://i.ibb.co/R03Zw8q/Male.png'
+            avatar: data.RepostPost.PostUser.avatar ? data.RepostPost.PostUser.avatar : 'https://i.ibb.co/R03Zw8q/Male.png',
+            verify_level: data.RepostPost.PostUser.verify_level
         };
         post.repostAuthor = {
             id: data.RepostUser.id,
@@ -46,7 +47,8 @@ function createPost(data, access_token) {
             id: data.LikePost.PostUser.id,
             username: data.LikePost.PostUser.username,
             fullname: `${data.LikePost.PostUser.name} ${data.LikePost.PostUser.lastname}`,
-            avatar: data.LikePost.PostUser.avatar ? data.LikePost.PostUser.avatar : 'https://i.ibb.co/R03Zw8q/Male.png'
+            avatar: data.LikePost.PostUser.avatar ? data.LikePost.PostUser.avatar : 'https://i.ibb.co/R03Zw8q/Male.png',
+            verify_level: data.LikePost.PostUser.verify_level
         };
         post.content = data.LikePost.content;
         post.image = data.LikePost.image;
@@ -67,7 +69,8 @@ function createPost(data, access_token) {
             id: data.SavePost.PostUser.id,
             username: data.SavePost.PostUser.username,
             fullname: `${data.SavePost.PostUser.name} ${data.SavePost.PostUser.lastname}`,
-            avatar: data.SavePost.PostUser.avatar ? data.SavePost.PostUser.avatar : 'https://i.ibb.co/R03Zw8q/Male.png'
+            avatar: data.SavePost.PostUser.avatar ? data.SavePost.PostUser.avatar : 'https://i.ibb.co/R03Zw8q/Male.png',
+            verify_level: data.SavePost.PostUser.verify_level
         };
         post.content = data.SavePost.content;
         post.image = data.SavePost.image;
@@ -89,7 +92,8 @@ function createPost(data, access_token) {
             id: data.PostUser.id,
             username: data.PostUser.username,
             fullname: `${data.PostUser.name} ${data.PostUser.lastname}`,
-            avatar: data.PostUser.avatar ? data.PostUser.avatar : 'https://i.ibb.co/R03Zw8q/Male.png'
+            avatar: data.PostUser.avatar ? data.PostUser.avatar : 'https://i.ibb.co/R03Zw8q/Male.png',
+            verify_level: data.PostUser.verify_level
         };
         post.content = data.content;
         post.image = data.image;

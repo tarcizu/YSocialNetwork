@@ -9,7 +9,8 @@ function createCookie(id, access_level) {
     const defaultOptions = {
         httpOnly: true,
         secure: true,
-        sameSite: 'Strict',
+        // sameSite: 'Strict',
+        sameSite: 'None', //Kept like this for testing
         maxAge: process.env.TOKENEXPIRATIONTIME
     };
     const options = {}

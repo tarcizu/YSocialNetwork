@@ -11,7 +11,7 @@
 }
 
 .repost {
-
+    cursor: pointer;
     margin-left: 30px;
     margin-bottom: 5px;
 }
@@ -21,7 +21,10 @@
     display: flex;
 }
 
-.avatarContainer {}
+.avatarContainer {
+    border-radius: 50%;
+    cursor: pointer;
+}
 
 .avatarContainer img {
     width: 60px;
@@ -36,11 +39,14 @@
 }
 
 #fullname {
+    cursor: pointer;
     font-size: 20px;
     font-weight: bold;
 }
 
 #username {
+    width: max-content;
+    cursor: pointer;
     font-size: 18px;
 }
 
@@ -70,7 +76,6 @@
 .content p {
     margin-left: 70px;
     word-wrap: break-word;
-
     font-size: 25px;
     margin-bottom: 20px;
 }
@@ -88,6 +93,18 @@
 
 .optionButton {
     cursor: pointer;
+    display: flex;
+    flex-direction: row;
+}
+
+.disableOptionButton {
+    display: flex;
+    flex-direction: row;
+}
+
+.optionButton span {
+    margin-top: -3px;
+    margin-left: 5px;
 }
 
 #timeAgo {
@@ -95,4 +112,12 @@
     font-size: 18px;
     margin-left: auto;
     margin-top: 5px;
+}
+
+.verifyBadge {
+
+    display: inline;
+    position: relative;
+    top: 2px;
+
 }

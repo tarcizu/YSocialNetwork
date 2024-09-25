@@ -2,9 +2,48 @@ const Sequelize = require('sequelize');
 const User = require('../../data/models/User');
 const Follower = require('../../data/models/Followers');
 
-async function findUserbyUsername(username) {
+
+async function findUserbyUsername(username, id = null) {
     try {
-        const result = await User.findOne({ where: { username: username } })
+        const result = await User.findOne({
+            where: { username: username },
+            attributes: {
+                include:
+                    [
+                        [
+                            Sequelize.literal(`(
+                        SELECT COUNT(*)
+                        FROM followers AS f
+                        WHERE f."followerID" = users.id
+                    )`),
+                            'followingCount'
+                        ],
+                        [
+                            Sequelize.literal(`(
+                        SELECT COUNT(*)
+                        FROM followers AS f
+                        WHERE f."followedID" = users.id
+                    )`),
+                            'followerCount'
+                        ],
+
+
+
+                        [Sequelize.literal(`CASE WHEN ${id ? `EXISTS(
+                        SELECT 1
+                        FROM followers AS f
+                        WHERE f."followerID" = ${id}
+                        AND f."followedID" = users.id
+                        )` : 'false'} THEN true ELSE false END`), 'isFollowed']
+
+
+
+                    ]
+            }
+
+        }
+
+        )
 
         if (result) {
             return result.dataValues;
@@ -15,6 +54,11 @@ async function findUserbyUsername(username) {
 
 
     } catch (error) {
+        console.log("-------------------------------------------------------");
+        console.log(error);
+
+        console.log("-------------------------------------------------------");
+
         return -1;
     }
 }

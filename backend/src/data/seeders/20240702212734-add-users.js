@@ -15,7 +15,9 @@ module.exports = {
         name: 'Jonh Test',
         lastname: 'Tester',
         avatar: null,
+        bio: 'Conta para teste da Rede Social',
         access_level: 1,
+        verify_level: 0,
         createdAt: new Date(),
         updatedAt: new Date()
       },
@@ -27,6 +29,7 @@ module.exports = {
         lastname: 'Musk',
         avatar: 'https://i.ibb.co/DzMKfDj/Elon-Musk-Avatar.jpg',
         access_level: 1,
+        verify_level: 1,
         createdAt: new Date(),
         updatedAt: new Date()
       },
@@ -38,6 +41,7 @@ module.exports = {
         lastname: 'Trump',
         avatar: 'https://i.ibb.co/D5wmZfN/Donald-Trump-Avatar.jpg',
         access_level: 1,
+        verify_level: 1,
         createdAt: new Date(),
         updatedAt: new Date()
       },
@@ -49,6 +53,7 @@ module.exports = {
         lastname: 'Teixeira',
         avatar: 'https://i.ibb.co/27Tz1rZ/Joaquim-Teixeira-Avatar.jpg',
         access_level: 1,
+        verify_level: 0,
         createdAt: new Date(),
         updatedAt: new Date()
       },
@@ -60,6 +65,7 @@ module.exports = {
         lastname: 'Alison Swift',
         avatar: 'https://i.ibb.co/4Jf9K4y/Taylor-Swift-Avatar.jpg',
         access_level: 1,
+        verify_level: 1,
         createdAt: new Date(),
         updatedAt: new Date()
       },
@@ -71,6 +77,7 @@ module.exports = {
         lastname: 'Milei',
         avatar: 'https://i.ibb.co/sK6bPTx/Javier-Milei-Avatar.jpg',
         access_level: 1,
+        verify_level: 1,
         createdAt: new Date(),
         updatedAt: new Date()
       },

@@ -19,6 +19,22 @@ export function formattedDate(dbTimestamp) {
     const date = `${formattedTime} - ${formattedDate}`
     return date;
 }
+export function formattedSignUpDate(dbTimestamp) {
+
+    const formattedTimestamp = new Date(dbTimestamp);
+
+
+
+    const dateOptions = {
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric'
+    }
+    const date = formattedTimestamp.toLocaleString('pt-BR', dateOptions).replace('.', '');
+
+    return date;
+}
+
 export function timeAgo(dbTimestamp) {
 
     const now = new Date();

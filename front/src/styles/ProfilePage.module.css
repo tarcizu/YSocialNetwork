@@ -36,27 +36,6 @@
 
 }
 
-.nameBadge {
-    display: flex;
-
-    width: 100%;
-
-
-}
-
-#fullname {
-    align-self: center;
-    font-size: 2em;
-    font-weight: bold;
-
-}
-
-.verifyBadge {
-    margin-top: 3px;
-    font-size: 2em;
-    align-self: center;
-}
-
 
 
 .middleSide {
@@ -85,6 +64,18 @@
     display: flex;
     flex-direction: column;
     border: 2px solid var(--ContentColor);
+}
+
+.UserHeader button {
+    border-radius: 25px;
+    font-size: 20px;
+    padding: 10px;
+    cursor: pointer;
+    margin: 5px;
+    background-color: var(--ButtonColor);
+    color: white;
+    border: 2px solid var(--ContentColor);
+
 }
 
 .menuLeftContainer {
@@ -132,47 +123,6 @@
     color: var(--ContentColor);
 }
 
-.UserNames {
-
-    color: var(--ContentColor);
-    border-radius: 20px;
-}
-
-.MenuOption {
-    color: var(--ContentColor);
-    display: flex;
-    font-size: 20px;
-    justify-content: center;
-    cursor: pointer;
-
-}
-
-.icon {
-    margin-top: 5px;
-    margin-right: 10px;
-}
-
-.TopHeader {
-
-    display: flex;
-    flex-direction: row;
-}
-
-.BottonHeader {
-    color: var(--ContentColor);
-    margin-top: 10px;
-    text-align: center;
-
-}
-
-.TopHeader img {
-    width: 30%;
-    aspect-ratio: 1 /1;
-    margin: 5px;
-    border-radius: 50%;
-    object-fit: cover;
-}
-
 .menuConfigs {
 
     margin-top: 20vh;
@@ -187,4 +137,18 @@
     font-size: 25px;
     justify-content: flex-start;
     align-content: flex-start;
+}
+
+.MenuOption {
+    color: var(--ContentColor);
+    display: flex;
+    font-size: 20px;
+    justify-content: center;
+    cursor: pointer;
+
+}
+
+.icon {
+    margin-top: 5px;
+    margin-right: 10px;
 }

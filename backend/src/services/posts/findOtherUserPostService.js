@@ -8,7 +8,7 @@ const Save = require('../../data/models/Save');
 
 
 
-async function findAllPostsbyID(id) {
+async function findAllOtherUserPostsbyID(otherUserID, userID) {
 
     try {
 
@@ -17,7 +17,7 @@ async function findAllPostsbyID(id) {
             nest: true,
             where:
             {
-                userID: id,
+                userID: otherUserID,
             },
             include:
                 [
@@ -29,7 +29,7 @@ async function findAllPostsbyID(id) {
                     {
                         model: User,
                         as: 'PostUser',
-                        attributes: ['id', 'username', 'name', 'lastname', 'avatar']
+                        attributes: ['id', 'username', 'name', 'lastname', 'avatar', 'verify_level']
                     },
                     {
                         model: Like,
@@ -60,15 +60,15 @@ async function findAllPostsbyID(id) {
                     [Sequelize.fn('COUNT', Sequelize.fn('DISTINCT', Sequelize.col('LikePost.id'))), 'likesCount'],
                     [Sequelize.fn('COUNT', Sequelize.fn('DISTINCT', Sequelize.col('RepostPost.id'))), 'repostsCount'],
                     [Sequelize.fn('COUNT', Sequelize.fn('DISTINCT', Sequelize.col('SavePost.id'))), 'savesCount'],
-                    [Sequelize.literal(`CASE WHEN EXISTS (
-                SELECT 1 FROM "likes" WHERE "likes"."postID" = "posts"."id" AND "likes"."userID" = ${id}
-            ) THEN true ELSE false END`), 'userLiked'],
-                    [Sequelize.literal(`CASE WHEN EXISTS (
-                SELECT 1 FROM "reposts" WHERE "reposts"."postID" = "posts"."id" AND "reposts"."userID" = ${id}
-            ) THEN true ELSE false END`), 'userReposted'],
-                    [Sequelize.literal(`CASE WHEN EXISTS (
-                SELECT 1 FROM "saves" WHERE "saves"."postID" = "posts"."id" AND "saves"."userID" = ${id}
-            ) THEN true ELSE false END`), 'userSaved']
+                    [Sequelize.literal(`CASE WHEN ${userID ? `EXISTS (
+                        SELECT 1 FROM "likes" WHERE "likes"."postID" = "posts"."id" AND "likes"."userID" = ${userID}
+                    )` : 'false'} THEN true ELSE false END`), 'userLiked'],
+                    [Sequelize.literal(`CASE WHEN ${userID ? `EXISTS (
+                        SELECT 1 FROM "reposts" WHERE "reposts"."postID" = "posts"."id" AND "reposts"."userID" = ${userID}
+                    )` : 'false'} THEN true ELSE false END`), 'userReposted'],
+                    [Sequelize.literal(`CASE WHEN ${userID ? `EXISTS (
+                        SELECT 1 FROM "saves" WHERE "saves"."postID" = "posts"."id" AND "saves"."userID" = ${userID}
+                    )` : 'false'} THEN true ELSE false END`), 'userSaved']
                 ],
             group: ['posts.id', 'PostSource.name', 'PostUser.id', 'PostUser.username', 'PostUser.name', 'PostUser.lastname', 'PostUser.avatar'],
             order: [['createdAt', 'DESC']]
@@ -79,7 +79,7 @@ async function findAllPostsbyID(id) {
             nest: true,
             where:
             {
-                userID: id,
+                userID: otherUserID,
             },
             include:
                 [
@@ -95,9 +95,9 @@ async function findAllPostsbyID(id) {
                                 [Sequelize.fn('COUNT', Sequelize.fn('DISTINCT', Sequelize.col('RepostPost->LikePost'))), 'likesCount'],
                                 [Sequelize.fn('COUNT', Sequelize.fn('DISTINCT', Sequelize.col('RepostPost->RepostPost'))), 'repostsCount'],
                                 [Sequelize.fn('COUNT', Sequelize.fn('DISTINCT', Sequelize.col('RepostPost->SavePost'))), 'savesCount'],
-                                [Sequelize.literal(`CASE WHEN EXISTS (SELECT 1 FROM "likes" WHERE "likes"."postID" = "RepostPost"."id" AND "likes"."userID" = ${id}) THEN true ELSE false END`), 'userLiked'],
-                                [Sequelize.literal(`CASE WHEN EXISTS (SELECT 1 FROM "reposts" WHERE "reposts"."postID" = "RepostPost"."id" AND "reposts"."userID" = ${id}) THEN true ELSE false END`), 'userReposted'],
-                                [Sequelize.literal(`CASE WHEN EXISTS (SELECT 1 FROM "saves" WHERE "saves"."postID" = "RepostPost"."id" AND "saves"."userID" = ${id}) THEN true ELSE false END`), 'userSaved']
+                                [Sequelize.literal(`CASE WHEN ${userID ? `EXISTS (SELECT 1 FROM "likes" WHERE "likes"."postID" = "RepostPost"."id" AND "likes"."userID" = ${userID})` : 'false'} THEN true ELSE false END`), 'userLiked'],
+                                [Sequelize.literal(`CASE WHEN ${userID ? `EXISTS (SELECT 1 FROM "reposts" WHERE "reposts"."postID" = "RepostPost"."id" AND "reposts"."userID" = ${userID})` : 'false'} THEN true ELSE false END`), 'userReposted'],
+                                [Sequelize.literal(`CASE WHEN ${userID ? `EXISTS (SELECT 1 FROM "saves" WHERE "saves"."postID" = "RepostPost"."id" AND "saves"."userID" = ${userID})` : 'false'} THEN true ELSE false END`), 'userSaved']
                             ],
                         include:
                             [
@@ -134,7 +134,7 @@ async function findAllPostsbyID(id) {
                     {
                         model: User,
                         as: 'RepostUser',
-                        attributes: ['id', 'username', 'name', 'lastname', 'avatar', 'verify_level']
+                        attributes: ['id', 'username', 'name', 'lastname', 'avatar']
                     }
                 ],
             attributes: ['id', 'createdAt'],
@@ -155,6 +155,10 @@ async function findAllPostsbyID(id) {
         }
 
     } catch (error) {
+        console.log("----------------------------");
+        console.log(error);
+
+        console.log("----------------------------");
 
         return -1
     }
@@ -162,5 +166,5 @@ async function findAllPostsbyID(id) {
 
 
 module.exports = {
-    findAllPostsbyID
+    findAllOtherUserPostsbyID
 }

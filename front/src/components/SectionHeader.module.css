@@ -1,0 +1,36 @@
+.sectionHeader {
+
+    width: calc(100% - 40px);
+    margin: 10px 20px;
+    max-height: 30vh;
+    margin-bottom: 5px;
+    display: flex;
+    flex-direction: row;
+
+}
+
+.leftSection {
+    display: flex;
+    width: 20%;
+    justify-content: center;
+}
+
+.icon {
+    font-size: 80px;
+    color: var(--ContentColor);
+    margin: 5px;
+}
+
+.rightSection {
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+    justify-content: center;
+
+}
+
+.title {
+
+    font-size: 60px;
+    color: var(--ContentColor);
+}

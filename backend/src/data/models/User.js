@@ -35,6 +35,15 @@ const User = database.define('users', {
     access_level: {
         type: Sequelize.SMALLINT,
         defaultValue: '1'
+    },
+    verify_level: {
+        type: Sequelize.SMALLINT,
+        defaultValue: '0'
+    },
+    bio: {
+        type: Sequelize.SMALLINT,
+        allowNull: false,
+        defaultValue: ''
     }
 
 

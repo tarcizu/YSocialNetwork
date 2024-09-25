@@ -3,13 +3,18 @@ import { FaRegHeart, FaHeart, FaRetweet, FaRegBookmark, FaBookmark } from 'react
 import styles from './Post.module.css';
 import { formattedDate, timeAgo } from '../controlller/dateController';
 import { contentPostFormatter } from '../controlller/contentFormatterController';
+import AvatarPhoto from './AvatarPhoto';
+import { useNavigate } from 'react-router-dom';
+import VerifyBadge from './VerifyBadge';
 
 
 
 
 
-const Post = ({ post, user }) => {
+const Post = ({ post, user = "", editable = true }) => {
 
+
+    const navigate = useNavigate();
     const [hasLiked, setHasLiked] = useState(post.hasLiked);
     const [hasSaved, setHasSaved] = useState(post.hasSaved);
     const [hasReposted, setHasReposted] = useState(post.hasReposted);
@@ -70,8 +75,8 @@ const Post = ({ post, user }) => {
 
             <div className={styles.post}>
                 {post.isRepost ? <>
-                    <div className={styles.repost}>
-                        <span><FaRetweet className={styles.resizedIcon} /> {post.repostAuthor.id === user.id ? 'Voce' : post.repostAuthor.fullname} repostou</span>
+                    <div className={styles.repost} >
+                        <span onClick={() => navigate(`/profile/${post.repostAuthor.username}`)}><FaRetweet className={styles.resizedIcon} /> {post.repostAuthor.id === user.id ? 'Voce' : post.repostAuthor.fullname} repostou</span>
                     </div>
                 </> : <>
 
@@ -79,12 +84,19 @@ const Post = ({ post, user }) => {
                 <div>
                 </div>
                 <div className={styles.header}>
-                    <div className={styles.avatarContainer}>
-                        <img src={post.author.avatar} alt={post.author.username} />
+                    <div className={styles.avatarContainer} onClick={() => navigate(`/profile/${post.author.username}`)}>
+                        <AvatarPhoto profileName={post.author.fullName}>{post.author.avatar}</AvatarPhoto>
                     </div>
-                    <div className={styles.userContainer}>
-                        <span id={styles.fullname}>{post.author.fullname}</span>
-                        <span id={styles.username}>@{post.author.username}</span>
+                    <div className={styles.userContainer} >
+                        <div>
+                            <span id={styles.fullname} onClick={() => navigate(`/profile/${post.author.username}`)}>{post.author.fullname}</span>
+                            <div className={styles.verifyBadge}>
+                                <VerifyBadge verifyLevel={post.author.verify_level} />
+                            </div>
+
+                        </div>
+
+                        <span id={styles.username} onClick={() => navigate(`/profile/${post.author.username}`)}>@{post.author.username}</span>
                     </div>
                     <span id={styles.timeAgo}>{timeAgo(post.createdData)}</span>
 
@@ -95,9 +107,12 @@ const Post = ({ post, user }) => {
                 </div>
                 <div className={styles.sendIdentify}><p>{`${formattedDate(post.createdData)} via ${post.source}`}</p></div>
                 <div className={styles.botton}>
-                    <div className={styles.optionButton} onClick={() => handleLikeButton()}>{hasLiked ? <FaHeart className={styles.LikeSelectedIcon} /> : <FaRegHeart className={styles.LikeIcon} />} {likes}</div>
-                    <div className={styles.optionButton} onClick={() => handleRepostButton()}>{hasReposted ? <FaRetweet className={styles.RepostSelectedIcon} /> : <FaRetweet className={styles.RepostIcon} />} {reposts}</div>
-                    <div className={styles.optionButton} onClick={() => handleSaveButton()}>{hasSaved ? <FaBookmark className={styles.SaveSelectedIcon} /> : <FaRegBookmark className={styles.SaveIcon} />}</div>
+                    <div className={editable ? styles.optionButton : styles.disableOptionButton} onClick={editable ? () => handleLikeButton() : undefined}>{hasLiked ? <FaHeart className={styles.LikeSelectedIcon} /> : <FaRegHeart className={styles.LikeIcon} />}
+                        <span>{likes}</span></div>
+                    <div className={editable ? styles.optionButton : styles.disableOptionButton} onClick={editable ? () => handleRepostButton() : undefined}>{hasReposted ? <FaRetweet className={styles.RepostSelectedIcon} /> : <FaRetweet className={styles.RepostIcon} />}
+                        <span>{reposts}</span>
+                    </div>
+                    <div className={editable ? styles.optionButton : styles.disableOptionButton} onClick={editable ? () => handleSaveButton() : undefined}>{hasSaved ? <FaBookmark className={styles.SaveSelectedIcon} /> : <FaRegBookmark className={styles.SaveIcon} />}</div>
                 </div>
             </div>
         </>

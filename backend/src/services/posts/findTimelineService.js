@@ -9,7 +9,6 @@ const Follower = require('../../data/models/Followers');
 
 
 
-
 async function findTimelinebyID(id) {
 
     try {
@@ -22,7 +21,7 @@ async function findTimelinebyID(id) {
                 {
                     model: User,
                     as: 'PostUser',
-                    attributes: ['id', 'username', 'name', 'lastname', 'avatar'],
+                    attributes: ['id', 'username', 'name', 'lastname', 'avatar', 'verify_level'],
                     required: true,
                     include: [
                         {
@@ -97,6 +96,8 @@ async function findTimelinebyID(id) {
 
 
 
+
+
         const reposts = await Repost.findAll({
             raw: true,
             nest: true,
@@ -124,7 +125,7 @@ async function findTimelinebyID(id) {
                             {
                                 model: User,
                                 as: 'PostUser',
-                                attributes: ['id', 'username', 'name', 'lastname', 'avatar'],
+                                attributes: ['id', 'username', 'name', 'lastname', 'avatar', 'verify_level'],
                                 required: true,
                                 include:
                                     [

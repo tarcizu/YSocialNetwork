@@ -1,10 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
-import '../index.css'
-import styles from '../styles/MainPage.module.css'
+import '../index.css';
+import styles from '../styles/MainPage.module.css';
 import { useNavigate, useLocation } from "react-router-dom";
 import { v4 as uuidv4 } from 'uuid';
 import cookies from 'js-cookie';
-import { FaSignOutAlt, FaUser, FaLightbulb, FaRegLightbulb, FaHome, FaHeart, FaBookmark, FaCog } from 'react-icons/fa'
+import { FaSignOutAlt, FaUser, FaLightbulb, FaRegLightbulb, FaHome, FaHeart, FaBookmark, FaCog } from 'react-icons/fa';
+import { MdFollowTheSigns } from 'react-icons/md'
 import Post from "../components/Post";
 import createUser from "../models/User";
 import LoadingCircle from "../components/LoadingCircle";
@@ -23,6 +24,11 @@ import VerifyBadge from "../components/VerifyBadge";
 import { getProfile } from "../services/profile/getProfileService";
 import { getProfileTimeline } from "../services/profile/getProfileTimelineService";
 import SectionHeader from "../components/SectionHeader";
+import { getFollowers } from "../services/profile/getFollowersService";
+import FollowLine from "../components/FollowLine";
+import createFollow from "../models/Follower";
+import { getFollowing } from "../services/profile/getFollowingService";
+import { getPost } from "../services/post/getPostService";
 
 
 
@@ -40,10 +46,15 @@ export default function MainPage() {
     const [forceReloadTrigger, setForceReloadTrigger] = useState(0);
     const [externalProfile, setExternalProfile] = useState(null);
     const [externalPosts, setExternalPosts] = useState(null);
+    const [externalPost, setExternalPost] = useState(null);
+    const [followers, setFollowers] = useState(null);
+    const [following, setFollowing] = useState(null);
 
+    const targetUserID = useRef(null);
+    const targetUserUsername = useRef(null);
     const pageMounted = useRef(false);
     const location = useLocation();
-    let { receivedUsername, receivedPostID } = location.state || {};
+    let { receivedUsername, receivedPostID, receivedPostUsername } = location.state || {};
 
 
     const forceUpdate = () => {
@@ -72,11 +83,19 @@ export default function MainPage() {
 
     const handleChangeTheme = async (e) => {
         e.preventDefault();
-
         setTheme(await changeTheme(document.getElementsByClassName('theme')[0]));
-
-
-
+    }
+    const handleFollowers = async (e) => {
+        e.preventDefault();
+        targetUserID.current = user.id;
+        targetUserUsername.current = user.username;
+        changePage('followers');
+    }
+    const handleFollowing = async (e) => {
+        e.preventDefault();
+        targetUserID.current = user.id;
+        targetUserUsername.current = user.username;
+        changePage('following');
     }
 
 
@@ -107,24 +126,13 @@ export default function MainPage() {
 
             if (receivedUsername) {
 
-
-                const result = await getProfile(receivedUsername);
-                if (result === -1) {
-                    console.log("Falha ao exibir usuário: Erro Desconhecido");
-                } else if (result === -2) {
-                    console.log("Usuário não encontrado: Erro 404");
-                    navigate("/404", { replace: true });
-                } else {
-
-                    setExternalProfile(createUser(result, access_token.current));
-
-                }
-                receivedUsername = "";
-
-
-
-
                 changePage('profile');
+            }
+            else if (receivedPostID) {
+
+
+
+                changePage('post');
             }
             else {
                 changePage('home');
@@ -217,9 +225,59 @@ export default function MainPage() {
                                 setExternalPosts(exPosts);
 
                             }
+                        }
+                        break;
+                    case 'post':
+                        result = await getPost(receivedPostID, receivedPostUsername, access_token.current);
+                        if (result === -1) {
+                            navigate("/404", { replace: true });
+                            console.log("Falha ao obter postagem: Erro Desconhecido");
+
+                        } else if (result === -2) {
+                            console.log("Falha ao obter postagem: Postagem não encontrada");
+                            navigate("/404", { replace: true });
+                        } else {
+                            setExternalPost(result);
+                        }
+                        break;
+                    case 'followers':
+                        result = await getFollowers(targetUserID.current, access_token.current);
 
 
+                        targetUserID.current = null;
+                        if (result === -1) {
+                            console.log("Falha ao obter seguidores: Erro Desconhecido");
+                        }
+                        else {
+                            setFollowers(result);
+                            const profile = await getProfile(targetUserUsername.current, access_token.current);
+                            targetUserUsername.current = null;
+                            if (profile === -1) {
+                                console.log("Falha ao exibir usuário: Erro Desconhecido");
+                            }
+                            else {
+                                setExternalProfile(createUser(profile, access_token.current));
 
+                            }
+                        }
+                        break;
+                    case 'following':
+                        result = await getFollowing(targetUserID.current, access_token.current);
+                        targetUserID.current = null;
+                        if (result === -1) {
+                            console.log("Falha ao obter seguidos: Erro Desconhecido");
+                        }
+                        else {
+                            setFollowing(result);
+                            const profile = await getProfile(targetUserUsername.current, access_token.current);
+                            targetUserUsername.current = null;
+                            if (profile === -1) {
+                                console.log("Falha ao exibir usuário: Erro Desconhecido");
+                            }
+                            else {
+                                setExternalProfile(createUser(profile, access_token.current));
+
+                            }
                         }
                         break;
                     default:
@@ -249,7 +307,7 @@ export default function MainPage() {
                 case 'home':
                     setPageContent(
                         <>
-
+                            {window.history.replaceState(null, '', '/home')}
                             <PostField key={uuidv4()} changePage={changePage} access_token={access_token.current} navigate={navigate} />
                             {
                                 timeline ? timeline.length !== 0 ? timeline.map(post => (<Post key={uuidv4()} user={user} post={createPost(post, access_token.current)} />)) : <div className={styles.emptyList}>
@@ -264,7 +322,8 @@ export default function MainPage() {
 
                     setPageContent(
                         <>
-                            <ProfileHeader key={uuidv4()} user={user} />
+                            {window.history.replaceState(null, '', '/profile/' + user.username)}
+                            <ProfileHeader key={uuidv4()} user={user} changePage={changePage} targetUsername={targetUserUsername} targetID={targetUserID} activeUserID={user.id} />
                             {posts ? posts.length !== 0 ? posts.map(post => (<Post key={uuidv4()} user={user} post={createPost(post, access_token.current)} />)) : <div className={styles.emptyList}>
                                 <FaUser className={styles.emptyListIcon} />
                                 <span>Seu perfil ainda não tem postagens. Comece a compartilhar conteúdo para que suas postagens apareçam aqui!</span>
@@ -275,6 +334,7 @@ export default function MainPage() {
                 case 'likes':
                     setPageContent(
                         <>
+                            {window.history.replaceState(null, '', '/home')}
                             <SectionHeader key={uuidv4()} title={"Postagens Curtidas"} Icon={FaHeart} />
                             {likedPosts ? likedPosts.length !== 0 ? likedPosts.map(post => (<Post key={uuidv4()} user={user} post={createPost(post, access_token.current)} />)) : <div className={styles.emptyList}>
                                 <FaHeart className={styles.emptyListIcon} />
@@ -286,6 +346,7 @@ export default function MainPage() {
                 case 'saved':
                     setPageContent(
                         <>
+                            {window.history.replaceState(null, '', '/home')}
                             <SectionHeader key={uuidv4()} title={"Postagens Salvas"} Icon={FaBookmark} />
                             {savedPosts ? savedPosts.length !== 0 ? savedPosts.map(post => (<Post key={uuidv4()} user={user} post={createPost(post, access_token.current)} />)) : <div className={styles.emptyList}>
                                 <FaBookmark className={styles.emptyListIcon} />
@@ -299,7 +360,8 @@ export default function MainPage() {
 
                     setPageContent(
                         <>
-                            <ProfileHeader key={uuidv4()} user={externalProfile} />
+
+                            <ProfileHeader key={uuidv4()} user={externalProfile} changePage={changePage} targetUsername={targetUserUsername} targetID={targetUserID} activeUserID={user.id} />
 
                             {externalPosts ? externalPosts.length !== 0 ? externalPosts.map(post => (<Post key={uuidv4()} post={createPost(post, access_token.current)} />)) : <div className={styles.emptyList}>
                                 <FaUser className={styles.emptyListIcon} />
@@ -308,11 +370,55 @@ export default function MainPage() {
                         </>
                     );
                     navigate("/home", { replace: true });
+                    { window.history.replaceState(null, '', '/profile/' + externalProfile.username) }
+                    break;
+                case 'post':
+
+                    setPageContent(
+                        <>
+                            {externalPost ? externalPost.map(post => (<Post key={uuidv4()} post={createPost(post, access_token.current)} />)) : <div className={styles.loadingCircle}></div>}
+                        </>
+                    );
+                    navigate("/home", { replace: true });
+                    { window.history.replaceState(null, '', '/post/' + externalPost[0].PostUser.username + "/" + externalPost[0].id) }
+                    break;
+                case 'following':
+
+                    setPageContent(
+                        <>
+                            {window.history.replaceState(null, '', '/home')}
+                            <ProfileHeader key={uuidv4()} user={externalProfile} changePage={changePage} targetUsername={targetUserUsername} targetID={targetUserID} activeUserID={user.id} />
+
+                            {following ? following.length !== 0 ? following.map(follower => (<FollowLine key={uuidv4()} follower={createFollow(follower, access_token.current)} />)) : <div className={styles.emptyList}>
+                                <MdFollowTheSigns className={styles.emptyListIcon} />
+                                <span>O perfil ainda não segue ninguém. Quando ele seguir alguém, eles aparecerão aqui!</span>
+                            </div> : <div className={styles.loadingCircle}></div>}
+                        </>
+                    );
+
+                    setFollowers(null);
+                    break;
+                case 'followers':
+
+                    setPageContent(
+                        <>
+                            {window.history.replaceState(null, '', '/home')}
+                            <ProfileHeader key={uuidv4()} user={externalProfile} changePage={changePage} targetUsername={targetUserUsername} targetID={targetUserID} activeUserID={user.id} />
+
+                            {followers ? followers.length !== 0 ? followers.map(follower => (<FollowLine key={uuidv4()} follower={createFollow(follower, access_token.current)} />)) : <div className={styles.emptyList}>
+                                <MdFollowTheSigns className={styles.emptyListIcon} />
+                                <span>O perfil ainda não é seguido por ninguém. Quando ele tiver seguidores, eles aparecerão aqui!</span>
+                            </div> : <div className={styles.loadingCircle}></div>}
+                        </>
+                    );
+
+                    setFollowers(null);
                     break;
                 case 'configs':
 
                     setPageContent(
                         <>
+                            {window.history.replaceState(null, '', '/home')}
                             <SectionHeader key={uuidv4()} title={"Configurações"} Icon={FaCog} />
                             <div className={styles.menuConfigs}>
 
@@ -360,7 +466,7 @@ export default function MainPage() {
                                 <div className={styles.UserNames}>
                                     <div className={styles.nameBadge}>
 
-                                        <span id={styles.fullname}>{user.name + " " + user.lastname.split(" ").pop()} </span>
+                                        <span id={styles.fullname}>{user.shortFullname} </span>
 
                                         <span className={styles.verifyBadge}><VerifyBadge className={styles.verifyBadge} verifyLevel={user.verify_level} /></span>
 
@@ -373,7 +479,8 @@ export default function MainPage() {
 
                             </div>
                             <div className={styles.BottonHeader}>
-                                <span><b>{user.following}</b> Seguindo <b>{user.followers}</b> Seguidores</span>
+                                <span onClick={handleFollowing}><b>{user.following}</b> Seguindo </span>
+                                <span onClick={handleFollowers}><b>{user.followers}</b> Seguidores</span>
                             </div>
                         </div>
                         <div className={styles.menuLeftContainer}>

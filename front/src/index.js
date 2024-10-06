@@ -8,6 +8,7 @@ import MainPage from './pages/MainPage';
 import ErrorPage from './pages/ErrorPage';
 import SignUpPage from './pages/SignUpPage';
 import ProfilePage from './pages/ProfilePage';
+import PostPage from './pages/PostPage';
 
 
 const router = createBrowserRouter([
@@ -35,6 +36,10 @@ const router = createBrowserRouter([
   {
     path: "/profile/:username",
     element: <ProfilePage />
+  },
+  {
+    path: "/post/:username/:id",
+    element: <PostPage />
   },
   {
     path: "/404",

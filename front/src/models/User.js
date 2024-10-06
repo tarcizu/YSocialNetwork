@@ -13,6 +13,7 @@ function createUser(data, access_token) {
         name: data.name,
         lastname: data.lastname,
         fullname: `${data.name} ${data.lastname}`,
+        shortFullname: `${data.name} ${data.lastname.split(" ").pop()}`,
         email: data.email,
         bio: data.bio,
         avatar: data.avatar,

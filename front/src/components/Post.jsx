@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FaRegHeart, FaHeart, FaRetweet, FaRegBookmark, FaBookmark } from 'react-icons/fa'
+import { FaRegHeart, FaHeart, FaRetweet, FaRegBookmark, FaBookmark, FaLink } from 'react-icons/fa'
 import styles from './Post.module.css';
 import { formattedDate, timeAgo } from '../controlller/dateController';
 import { contentPostFormatter } from '../controlller/contentFormatterController';
@@ -55,6 +55,7 @@ const Post = ({ post, user = "", editable = true }) => {
         }
     }
     const handleSaveButton = async () => {
+
         if (hasSaved === false) {
             const result = await post.addSave();
             if (result) {
@@ -66,6 +67,18 @@ const Post = ({ post, user = "", editable = true }) => {
                 setHasSaved(false);
             }
         }
+    }
+    const handleShare = async () => {
+        console.log("Clicou em compartilhar");
+        if (navigator.share !== undefined) {
+
+            navigator.share({
+                title: 'Postagem do Y',
+                text: 'post.content',
+                url: `/post/${post.author.username}/${post.id}`
+            })
+        }
+
     }
 
 
@@ -102,7 +115,7 @@ const Post = ({ post, user = "", editable = true }) => {
 
 
                 </div>
-                <div className={styles.content}>
+                <div className={styles.content} onClick={() => navigate(`/post/${post.author.username}/${post.id}`)}>
                     <p dangerouslySetInnerHTML={{ __html: contentPostFormatter(post.content) }}></p>
                 </div>
                 <div className={styles.sendIdentify}><p>{`${formattedDate(post.createdData)} via ${post.source}`}</p></div>
@@ -113,6 +126,7 @@ const Post = ({ post, user = "", editable = true }) => {
                         <span>{reposts}</span>
                     </div>
                     <div className={editable ? styles.optionButton : styles.disableOptionButton} onClick={editable ? () => handleSaveButton() : undefined}>{hasSaved ? <FaBookmark className={styles.SaveSelectedIcon} /> : <FaRegBookmark className={styles.SaveIcon} />}</div>
+                    <div className={styles.optionButton} onClick={() => handleShare()}> <FaLink /> </div>
                 </div>
             </div>
         </>

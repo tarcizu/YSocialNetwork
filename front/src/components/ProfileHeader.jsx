@@ -7,7 +7,7 @@ import VerifyBadge from './VerifyBadge';
 
 
 
-const ProfileHeader = ({ user, editable = true }) => {
+const ProfileHeader = ({ user, editable = true, changePage, targetID, targetUsername, activeUserID = 0 }) => {
 
     const [followed, SetFollowed] = useState(user.isFollowed);
 
@@ -29,6 +29,26 @@ const ProfileHeader = ({ user, editable = true }) => {
 
 
     }
+    const handleFollowing = async (e) => {
+
+
+        targetID.current = user.id;
+        targetUsername.current = user.username;
+        changePage('following');
+
+
+
+    }
+    const handleFollowers = async (e) => {
+        targetID.current = user.id;
+        targetUsername.current = user.username;
+        changePage('followers');
+
+
+
+
+    }
+
 
 
 
@@ -44,13 +64,13 @@ const ProfileHeader = ({ user, editable = true }) => {
                             <div className={styles.names}>
                                 <div className={styles.nameBadge}>
 
-                                    <span>{user.name + " " + user.lastname.split(" ").pop()} </span>
+                                    <span>{user.shortFullname} </span>
                                     <VerifyBadge verifyLevel={user.verify_level} />
 
                                 </div>
                                 <h2>@{user.username}</h2>
                             </div>
-                            {editable ? followed ?
+                            {editable && activeUserID !== user.id ? followed ?
                                 < div className={styles.button} onClick={() => handleUnFollow()}>
                                     <button>Deixar de Seguir</button>
                                 </div> : <div className={styles.button} onClick={() => handleFollow()}>
@@ -60,7 +80,9 @@ const ProfileHeader = ({ user, editable = true }) => {
                             }
                         </div>
                         <div className={styles.bottomRightSection}>
-                            <p><b>{user.following}</b> Seguindo <b>{user.followers}</b> Seguidores</p>
+
+                            <p onClick={() => handleFollowing()}><b>{user.following}</b> Seguindo </p>
+                            <p onClick={() => handleFollowers()}><b>{user.followers}</b> Seguidores</p>
                         </div>
 
                     </div>

@@ -8,12 +8,13 @@ module.exports =
     "host": process.env.DB_HOST,
     "port": process.env.DB_PORT,
     "dialect": process.env.DB_DIALECT,
-    "dialectOptions": {
+
+    "dialectOptions": process.env.DB_SSL === 'true' ? {
       ssl: {
         require: true,
         rejectUnauthorized: false
       }
-    },
+    } : {},
     "seederStorage": 'sequelize'
   },
   "test": {
@@ -23,12 +24,12 @@ module.exports =
     "host": process.env.DB_HOST,
     "port": process.env.DB_PORT,
     "dialect": process.env.DB_DIALECT,
-    "dialectOptions": {
+    "dialectOptions": process.env.DB_SSL === 'true' ? {
       ssl: {
         require: true,
         rejectUnauthorized: false
       }
-    },
+    } : {},
     "seederStorage": 'sequelize'
   },
   "production": {
@@ -38,12 +39,12 @@ module.exports =
     "host": process.env.DB_HOST,
     "port": process.env.DB_PORT,
     "dialect": process.env.DB_DIALECT,
-    "dialectOptions": {
+    "dialectOptions": process.env.DB_SSL === 'true' ? {
       ssl: {
         require: true,
         rejectUnauthorized: false
       }
-    },
+    } : {},
     "seederStorage": 'sequelize'
   }
 }

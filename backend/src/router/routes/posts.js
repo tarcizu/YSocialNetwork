@@ -1,6 +1,6 @@
 const { Router } = require('express');
 
-const { findPosts, createPost, findTimeline, findLikedPosts, findSavedPosts, addLikePost, removeLikePost, removeRepostPost, addRepostPost, addSavePost, removeSavePost } = require('../../controllers/postController');
+const { findPosts, createPost, findTimeline, findLikedPosts, findSavedPosts, addLikePost, removeLikePost, removeRepostPost, addRepostPost, addSavePost, removeSavePost, getPost } = require('../../controllers/postController');
 const isLogged = require('../../middleware/isLogged');
 
 
@@ -19,6 +19,7 @@ postRouter.post('/:postID/repost', isLogged, addRepostPost);
 postRouter.delete('/:postID/repost', isLogged, removeRepostPost);
 postRouter.post('/:postID/save', isLogged, addSavePost);
 postRouter.delete('/:postID/save', isLogged, removeSavePost);
+postRouter.post('/:username/:postID', getPost);
 
 
 

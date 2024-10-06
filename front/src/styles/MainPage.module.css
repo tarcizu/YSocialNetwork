@@ -165,6 +165,11 @@
 
 }
 
+.BottonHeader span {
+    cursor: pointer;
+
+}
+
 .TopHeader img {
     width: 30%;
     aspect-ratio: 1 /1;

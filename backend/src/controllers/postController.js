@@ -1,4 +1,4 @@
-const { findAllPostsbyID } = require('../services/posts/findPostService');
+const { findAllPostsbyID } = require('../services/posts/findPostsService');
 const { createNewPost } = require('../services/posts/createPostService');
 const { findTimelinebyID } = require('../services/posts/findTimelineService');
 const { findLikedPostsbyID } = require('../services/posts/findLikedPostService');
@@ -9,6 +9,7 @@ const { addRepost } = require('../services/posts/addRepostService');
 const { removeRepost } = require('../services/posts/removeRepostService');
 const { addSave } = require('../services/posts/addSaveService');
 const { removeSave } = require('../services/posts/removeSaveService');
+const { findPost } = require('../services/posts/findPostService');
 
 
 
@@ -257,6 +258,30 @@ async function removeSavePost(request, response) {
         response.sendStatus(200);
     }
 };
+async function getPost(request, response) {
+    const id = request.body.id;
+    const postId = request.params.postID;
+    const username = request.params.username;
+    console.log("\n----------------ROUTE STARTED----------------");
+    console.log(`Rota de Postagem:\nId: ${id ? id : "[NÃO ENVIADO]"}\nId da Postagem: ${postId ? postId : "[NÃO ENVIADO]"}\nNome do Usuário: ${username ? username : "[NÃO ENVIADO]"}`);
+    const result = await findPost(id, postId, username);
+    if (result === -1) {
+        console.log(`\nFalha ao obter postagem: Error desconhecido`);
+        console.log("-----------------ROUTE ENDED-----------------");
+        response.sendStatus(400);
+    }
+    else if (result === -2) {
+        console.log(`\nFalha ao obter postagem: Nenhuma postagem encontrada`);
+        console.log("-----------------ROUTE ENDED-----------------");
+        response.sendStatus(404);
+    }
+    else {
+        console.log(`\nPostagem obtida com sucesso!`);
+        console.log("-----------------ROUTE ENDED-----------------");
+        response.status(200).json(result)
+    }
+
+};
 
 
 
@@ -272,5 +297,6 @@ module.exports = {
     addRepostPost,
     removeRepostPost,
     addSavePost,
-    removeSavePost
+    removeSavePost,
+    getPost
 }

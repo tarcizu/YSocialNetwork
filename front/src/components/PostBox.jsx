@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import styles from './PostField.module.css';
+import styles from './PostBox.module.css';
 import { createPost } from '../services/post/createPostService';
-import { logout } from '../controlller/logoutController';
+import { logout } from '../controller/logoutController';
 
 
 
-const PostField = ({ access_token, navigate, changePage }) => {
+const PostBox = ({ access_token, navigate, changePage }) => {
 
     const [characterCounter, setCharacterCounter] = useState(0);
     const [postContent, setPostContent] = useState("");
@@ -58,4 +58,4 @@ const PostField = ({ access_token, navigate, changePage }) => {
 }
 
 
-export default PostField;
+export default PostBox;

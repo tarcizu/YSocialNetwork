@@ -8,12 +8,30 @@
 
 }
 
+.followerSmall {
+    display: flex;
+    flex-direction: row;
+    margin: 10px 20px;
+    height: 40px;
+    justify-content: space-between;
+    /* background-color: blue; */
+
+
+}
+
 .leftContainer {
     display: flex;
     flex-direction: row;
 }
 
 .photo {
+
+    height: 100%;
+    aspect-ratio: 1/1;
+    cursor: pointer;
+}
+
+.photoSmall {
 
     height: 100%;
     aspect-ratio: 1/1;
@@ -29,9 +47,24 @@
     color: var(--ContentColor);
 }
 
+.namesSmall {
+    align-self: center;
+    margin-left: 10px;
+    text-align: start;
+    display: flex;
+    flex-direction: column;
+    color: var(--ContentColor);
+}
+
 .name {
     font-weight: bold;
     font-size: 1.5rem;
+    cursor: pointer;
+}
+
+.nameSmall {
+    font-weight: bold;
+    font-size: 1rem;
     cursor: pointer;
 }
 
@@ -51,6 +84,16 @@
     border-radius: 25px;
     font-size: 20px;
     padding: 10px;
+    border: 2px solid var(--ContentColor);
+    background-color: var(--ButtonColor);
+    color: white;
+}
+
+.followButtonSmall button {
+    cursor: pointer;
+    border-radius: 25px;
+    font-size: 15px;
+    padding: 5px;
     border: 2px solid var(--ContentColor);
     background-color: var(--ButtonColor);
     color: white;

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { FaRegHeart, FaHeart, FaRetweet, FaRegBookmark, FaBookmark, FaLink } from 'react-icons/fa'
 import styles from './Post.module.css';
-import { formattedDate, timeAgo } from '../controlller/dateController';
-import { contentPostFormatter } from '../controlller/contentFormatterController';
+import { formattedDate, timeAgo } from '../controller/dateController';
+import { contentPostFormatter } from '../controller/contentFormatterController';
 import AvatarPhoto from './AvatarPhoto';
 import { useNavigate } from 'react-router-dom';
 import VerifyBadge from './VerifyBadge';

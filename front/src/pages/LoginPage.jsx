@@ -3,7 +3,7 @@ import '../index.css'
 import styles from '../styles/LoginPage.module.css'
 import { login } from '../services/login/loginService'
 import { Link, useNavigate } from "react-router-dom";
-import { setInitialTheme } from "../controlller/themeController";
+import { setInitialTheme } from "../controller/themeController";
 
 
 
@@ -46,7 +46,7 @@ export default function LoginPage() {
             clearLogin();
         }
         else {
-            navigate('/home');
+            navigate('/home', { replace: true });
 
         }
 

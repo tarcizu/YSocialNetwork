@@ -3,12 +3,13 @@ import styles from './FollowLine.module.css';
 import AvatarPhoto from './AvatarPhoto';
 import { useNavigate } from 'react-router-dom';
 import VerifyBadge from './VerifyBadge';
+import { SlUserFollow, SlUserFollowing } from "react-icons/sl";
 
 
 
 
 
-const FollowLine = ({ follower, user = "" }) => {
+const FollowLine = ({ follower, activeUserID = 0, following = null, setFollowing = null, small = false }) => {
 
     const navigate = useNavigate();
     const [followed, SetFollowed] = useState(follower.isFollowed);
@@ -18,15 +19,19 @@ const FollowLine = ({ follower, user = "" }) => {
         const result = await follower.addFollower();
         if (result) {
             SetFollowed(true);
+
+
+            setFollowing((following) => following + 1);
         }
 
     }
     const handleUnFollow = async (e) => {
-        console.log("Entrou em UnFollow");
 
         const result = await follower.removeFollower();
         if (result) {
             SetFollowed(false);
+
+            setFollowing((following) => following - 1);
         }
 
 
@@ -37,26 +42,26 @@ const FollowLine = ({ follower, user = "" }) => {
         <>
 
 
-            <div className={styles.follower}>
+            <div className={small ? styles.followerSmall : styles.follower}>
 
                 <div className={styles.leftContainer}>
-                    <div onClick={() => navigate(`/profile/${follower.user.username}`)} className={styles.photo}>
+                    <div onClick={() => navigate(`/profile/${follower.user.username}`)} className={small ? styles.photoSmall : styles.photo}>
                         <AvatarPhoto profileName={follower.user.shortFullname}>{follower.user.avatar}</AvatarPhoto>
                     </div>
-                    <div className={styles.names}>
+                    <div className={small ? styles.namesSmall : styles.names}>
                         <div>
-                            <span onClick={() => navigate(`/profile/${follower.user.username}`)} className={styles.name}>{follower.user.shortFullname}</span>
+                            <span onClick={() => navigate(`/profile/${follower.user.username}`)} className={small ? styles.nameSmall : styles.name}>{follower.user.shortFullname}</span>
                             <VerifyBadge verifyLevel={follower.user.verify_level} />
                         </div>
                         <span onClick={() => navigate(`/profile/${follower.user.username}`)} className={styles.username}>@{follower.user.username}</span>
                     </div>
                 </div>
-                {followed ? <>
-                    <div onClick={() => handleUnFollow()} className={styles.followButton}>
-                        <button>Deixar de Seguir</button>
+                {follower.user.id === activeUserID ? <></> : followed ? <>
+                    <div onClick={() => handleUnFollow()} className={small ? styles.followButtonSmall : styles.followButton}>
+                        <button>Seguindo</button>
                     </div>
                 </> : <>
-                    <div onClick={() => handleFollow()} className={styles.followButton}>
+                    <div onClick={() => handleFollow()} className={small ? styles.followButtonSmall : styles.followButton}>
                         <button>Seguir</button>
                     </div>
                 </>}

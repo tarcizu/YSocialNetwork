@@ -4,17 +4,18 @@ import styles from '../styles/MainPage.module.css';
 import { useNavigate, useLocation } from "react-router-dom";
 import { v4 as uuidv4 } from 'uuid';
 import cookies from 'js-cookie';
-import { FaSignOutAlt, FaUser, FaLightbulb, FaRegLightbulb, FaHome, FaHeart, FaBookmark, FaCog } from 'react-icons/fa';
+import { FaSignOutAlt, FaUser, FaLightbulb, FaRegLightbulb, FaHome, FaHeart, FaBookmark, FaCog, FaUserEdit } from 'react-icons/fa';
 import { MdFollowTheSigns } from 'react-icons/md'
+import { RiLockPasswordFill } from "react-icons/ri";
 import Post from "../components/Post";
 import createUser from "../models/User";
 import LoadingCircle from "../components/LoadingCircle";
 import createPost from "../models/Post";
-import PostField from "../components/PostField";
+import PostBox from "../components/PostBox";
 import { auth } from "../services/auth/authService";
 import { getPosts } from "../services/post/getPostsService";
-import { logout } from "../controlller/logoutController";
-import { changeTheme, setInitialTheme } from "../controlller/themeController";
+import { logout } from "../controller/logoutController";
+import { changeTheme, setInitialTheme } from "../controller/themeController";
 import { getTimeline } from "../services/post/getTimelineService";
 import { getLikedPosts } from "../services/post/getLikedPostsService";
 import { getSavedPosts } from "../services/post/getSavedPostsService";
@@ -29,6 +30,10 @@ import FollowLine from "../components/FollowLine";
 import createFollow from "../models/Follower";
 import { getFollowing } from "../services/profile/getFollowingService";
 import { getPost } from "../services/post/getPostService";
+import SearchBox from "../components/SearchBox";
+import { getUsersSuggestion } from "../services/profile/getUsersSuggestionService";
+import { updatePassword, updateProfile } from "../services/user/updateUserService";
+import { UploadPhoto } from "../services/external/UploadPhotoService";
 
 
 
@@ -49,31 +54,47 @@ export default function MainPage() {
     const [externalPost, setExternalPost] = useState(null);
     const [followers, setFollowers] = useState(null);
     const [following, setFollowing] = useState(null);
+    const [followingCount, setFollowingCount] = useState(0);
+    const [usersSuggestion, setUsersSuggestion] = useState(null);
+
+
+    const avatarInputRef = useRef(null);
+
+
+    const [errorMessage, setErrorMessage] = useState('');
+
+
+
+
+    const [editableProfile, setEditableProfile] = useState(null);
+    const [editablePassword, setEditablePassword] = useState({ oldPassword: null, newPassword: null, newPasswordVerify: null });
+    const [newPhoto, setNewPhoto] = useState(null);
+    const [base64Photo, setBase64Photo] = useState(null);
+
+    const access_token = useRef('');
 
     const targetUserID = useRef(null);
     const targetUserUsername = useRef(null);
     const pageMounted = useRef(false);
+    const [profileUpdateMounted, setProfileUpdateMounted] = useState(false);
+    const [startUpdateProfile, setStartUpdateProfile] = useState(false);
+    const [startUploadPhoto, setStartUploadPhoto] = useState(false);
     const location = useLocation();
+
     let { receivedUsername, receivedPostID, receivedPostUsername } = location.state || {};
 
+    const navigate = useNavigate();
 
     const forceUpdate = () => {
         setForceUpdateTrigger(forceUpdateTrigger + 1);
     }
-    const changePage = async (page) => {
 
+    const changePage = async (page) => {
         if (page) {
             setCurrentPage(page);
         }
         forceUpdate();
     };
-
-    const navigate = useNavigate();
-
-
-    const access_token = useRef('');
-
-
 
     const handleLogOut = (e) => {
         e.preventDefault();
@@ -85,18 +106,130 @@ export default function MainPage() {
         e.preventDefault();
         setTheme(await changeTheme(document.getElementsByClassName('theme')[0]));
     }
+
     const handleFollowers = async (e) => {
         e.preventDefault();
         targetUserID.current = user.id;
         targetUserUsername.current = user.username;
         changePage('followers');
     }
+
     const handleFollowing = async (e) => {
         e.preventDefault();
         targetUserID.current = user.id;
         targetUserUsername.current = user.username;
         changePage('following');
     }
+
+    const handleUpdateProfile = (e) => {
+        e.preventDefault();
+        setStartUpdateProfile(true);
+    }
+
+    const handleUpdatePassword = async (e) => {
+        e.preventDefault();
+        const oldPasswordPlace = document.getElementById('oldPasswordLine');
+        const newPasswordPlace = document.getElementById('newPasswordLine');
+        oldPasswordPlace.style.display = 'none';
+        newPasswordPlace.style.display = 'none';
+
+        if (editablePassword.newPassword === editablePassword.newPasswordVerify) {
+
+            const result = await updatePassword(access_token.current, editablePassword);
+            if (result === -1) {
+                console.log("Não foi possível alterar a senha");
+            }
+            else if (result === -3) {
+                setErrorMessage('Senha invalida');
+                oldPasswordPlace.style.display = 'flex';
+            } else if (result === -2) {
+                console.log("Senha alterada com sucesso");
+                navigate(0);
+            };
+        } else {
+            setErrorMessage('A senhas não conferem');
+            newPasswordPlace.style.display = 'flex';
+        }
+    }
+
+    const handleAvatarSend = async (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setBase64Photo(reader.result);
+                setNewPhoto(URL.createObjectURL(file));
+            }
+            reader.readAsDataURL(file);
+            setStartUploadPhoto(true);
+        }
+    }
+    const handleAvatarClick = async (e) => {
+
+        avatarInputRef.current.click();
+
+    }
+
+    useEffect(() => {
+        (async () => {
+            if (startUpdateProfile) {
+
+                const photoPlace = document.getElementById('photoLine');
+                photoPlace.style.display = 'none';
+
+                if (startUploadPhoto) {
+                    const result = await UploadPhoto(base64Photo, user.name);
+                    if (result === -1) {
+                        setErrorMessage('Não foi possível atualizar a foto');
+                        photoPlace.style.display = 'flex';
+                        setStartUpdateProfile(false);
+                        setNewPhoto(null);
+                    } else {
+                        setEditableProfile((editableProfile) => ({ ...editableProfile, avatar: result }));
+                        setProfileUpdateMounted(true)
+                    }
+                    setStartUploadPhoto(false);
+
+                } else {
+                    setProfileUpdateMounted(true);
+                }
+
+                const emailPlace = document.getElementById('emailLine');
+                emailPlace.style.display = 'none';
+
+                if (profileUpdateMounted) {
+                    const result = await updateProfile(access_token.current, editableProfile);
+                    if (result === -1) {
+                        console.log("Não foi possível atualizar o perfil");
+
+                    }
+                    else if (result === -3) {
+                        setErrorMessage('Já existe um usuário com esse e-mail');
+                        emailPlace.style.display = 'flex';
+
+                    } else if (result === -2) {
+                        console.log("Perfil Atualizado");
+                        navigate(0);
+
+                    };
+                    setProfileUpdateMounted(false);
+                    setStartUpdateProfile(false);
+                }
+
+
+            }
+
+        })();
+
+
+
+
+
+    }, [editableProfile, startUpdateProfile, profileUpdateMounted])
+
+
+
+
 
 
     useEffect(() => {
@@ -120,7 +253,16 @@ export default function MainPage() {
                 logout(navigate);
             } else {
                 setUser(createUser(result, access_token.current));
+                setFollowingCount(parseInt(result.followingCount));
+
                 console.log("Usuário Autenticado");
+            }
+            const suggestion = await getUsersSuggestion(access_token.current);
+            if (suggestion === -1) {
+
+            } else {
+
+                setUsersSuggestion(suggestion);
             }
             pageMounted.current = true;
 
@@ -152,12 +294,14 @@ export default function MainPage() {
 
 
 
+
     useEffect(() => {
 
         if (pageMounted.current) {
 
             (async () => {
                 let result = null;
+
                 switch (currentPage) {
                     case 'home':
 
@@ -280,6 +424,12 @@ export default function MainPage() {
                             }
                         }
                         break;
+                    case 'editProfile':
+                        setEditableProfile(user);
+                        setNewPhoto(null);
+                        break;
+                    case 'editPassword':
+                        break;
                     default:
                         break;
 
@@ -303,12 +453,15 @@ export default function MainPage() {
     useEffect(() => {
 
         if (pageMounted.current) {
+            let pagePath = "";
+            let pageContent = "";
             switch (currentPage) {
                 case 'home':
-                    setPageContent(
+                    pagePath = '/home'
+                    pageContent = (
                         <>
-                            {window.history.replaceState(null, '', '/home')}
-                            <PostField key={uuidv4()} changePage={changePage} access_token={access_token.current} navigate={navigate} />
+
+                            <PostBox key={uuidv4()} changePage={changePage} access_token={access_token.current} navigate={navigate} />
                             {
                                 timeline ? timeline.length !== 0 ? timeline.map(post => (<Post key={uuidv4()} user={user} post={createPost(post, access_token.current)} />)) : <div className={styles.emptyList}>
                                     <FaHome className={styles.emptyListIcon} />
@@ -319,11 +472,10 @@ export default function MainPage() {
                     );
                     break;
                 case 'myProfile':
-
-                    setPageContent(
+                    pagePath = '/profile/' + user.username;
+                    pageContent = (
                         <>
-                            {window.history.replaceState(null, '', '/profile/' + user.username)}
-                            <ProfileHeader key={uuidv4()} user={user} changePage={changePage} targetUsername={targetUserUsername} targetID={targetUserID} activeUserID={user.id} />
+                            <ProfileHeader key={uuidv4()} user={user} changePage={changePage} targetUsername={targetUserUsername} targetID={targetUserID} activeUserID={user.id} following={followingCount} setFollowing={setFollowingCount} />
                             {posts ? posts.length !== 0 ? posts.map(post => (<Post key={uuidv4()} user={user} post={createPost(post, access_token.current)} />)) : <div className={styles.emptyList}>
                                 <FaUser className={styles.emptyListIcon} />
                                 <span>Seu perfil ainda não tem postagens. Comece a compartilhar conteúdo para que suas postagens apareçam aqui!</span>
@@ -332,9 +484,9 @@ export default function MainPage() {
                     );
                     break;
                 case 'likes':
-                    setPageContent(
+                    pagePath = '/home'
+                    pageContent = (
                         <>
-                            {window.history.replaceState(null, '', '/home')}
                             <SectionHeader key={uuidv4()} title={"Postagens Curtidas"} Icon={FaHeart} />
                             {likedPosts ? likedPosts.length !== 0 ? likedPosts.map(post => (<Post key={uuidv4()} user={user} post={createPost(post, access_token.current)} />)) : <div className={styles.emptyList}>
                                 <FaHeart className={styles.emptyListIcon} />
@@ -344,24 +496,23 @@ export default function MainPage() {
                     );
                     break;
                 case 'saved':
-                    setPageContent(
+                    pagePath = '/home'
+                    pageContent = (
                         <>
-                            {window.history.replaceState(null, '', '/home')}
                             <SectionHeader key={uuidv4()} title={"Postagens Salvas"} Icon={FaBookmark} />
                             {savedPosts ? savedPosts.length !== 0 ? savedPosts.map(post => (<Post key={uuidv4()} user={user} post={createPost(post, access_token.current)} />)) : <div className={styles.emptyList}>
                                 <FaBookmark className={styles.emptyListIcon} />
                                 <span>Você ainda não salvou nenhuma postagem. Quando você salvar algo, suas postagens favoritas aparecerão aqui!</span>
                             </div> : <div className={styles.loadingCircle}></div>}
-
                         </>
                     );
                     break;
                 case 'profile':
-
-                    setPageContent(
+                    pagePath = '/profile/' + externalProfile.username;
+                    pageContent = (
                         <>
 
-                            <ProfileHeader key={uuidv4()} user={externalProfile} changePage={changePage} targetUsername={targetUserUsername} targetID={targetUserID} activeUserID={user.id} />
+                            <ProfileHeader key={uuidv4()} user={externalProfile} changePage={changePage} targetUsername={targetUserUsername} targetID={targetUserID} activeUserID={user.id} following={followingCount} setFollowing={setFollowingCount} />
 
                             {externalPosts ? externalPosts.length !== 0 ? externalPosts.map(post => (<Post key={uuidv4()} post={createPost(post, access_token.current)} />)) : <div className={styles.emptyList}>
                                 <FaUser className={styles.emptyListIcon} />
@@ -370,26 +521,24 @@ export default function MainPage() {
                         </>
                     );
                     navigate("/home", { replace: true });
-                    { window.history.replaceState(null, '', '/profile/' + externalProfile.username) }
                     break;
                 case 'post':
-
-                    setPageContent(
+                    pagePath = '/post/' + externalPost[0].PostUser.username + "/" + externalPost[0].id;
+                    pageContent = (
                         <>
                             {externalPost ? externalPost.map(post => (<Post key={uuidv4()} post={createPost(post, access_token.current)} />)) : <div className={styles.loadingCircle}></div>}
                         </>
                     );
                     navigate("/home", { replace: true });
-                    { window.history.replaceState(null, '', '/post/' + externalPost[0].PostUser.username + "/" + externalPost[0].id) }
                     break;
                 case 'following':
-
-                    setPageContent(
+                    pagePath = '/home'
+                    pageContent = (
                         <>
-                            {window.history.replaceState(null, '', '/home')}
-                            <ProfileHeader key={uuidv4()} user={externalProfile} changePage={changePage} targetUsername={targetUserUsername} targetID={targetUserID} activeUserID={user.id} />
 
-                            {following ? following.length !== 0 ? following.map(follower => (<FollowLine key={uuidv4()} follower={createFollow(follower, access_token.current)} />)) : <div className={styles.emptyList}>
+                            <ProfileHeader key={uuidv4()} user={externalProfile} changePage={changePage} targetUsername={targetUserUsername} targetID={targetUserID} activeUserID={user.id} following={followingCount} setFollowing={setFollowingCount} />
+
+                            {following ? following.length !== 0 ? following.map(follower => (<FollowLine key={uuidv4()} follower={createFollow(follower, access_token.current)} activeUserID={user.id} following={followingCount} setFollowing={setFollowingCount} />)) : <div className={styles.emptyList}>
                                 <MdFollowTheSigns className={styles.emptyListIcon} />
                                 <span>O perfil ainda não segue ninguém. Quando ele seguir alguém, eles aparecerão aqui!</span>
                             </div> : <div className={styles.loadingCircle}></div>}
@@ -399,13 +548,12 @@ export default function MainPage() {
                     setFollowers(null);
                     break;
                 case 'followers':
-
-                    setPageContent(
+                    pagePath = '/home'
+                    pageContent = (
                         <>
-                            {window.history.replaceState(null, '', '/home')}
-                            <ProfileHeader key={uuidv4()} user={externalProfile} changePage={changePage} targetUsername={targetUserUsername} targetID={targetUserID} activeUserID={user.id} />
+                            <ProfileHeader key={uuidv4()} user={externalProfile} changePage={changePage} targetUsername={targetUserUsername} targetID={targetUserID} activeUserID={user.id} following={followingCount} setFollowing={setFollowingCount} />
 
-                            {followers ? followers.length !== 0 ? followers.map(follower => (<FollowLine key={uuidv4()} follower={createFollow(follower, access_token.current)} />)) : <div className={styles.emptyList}>
+                            {followers ? followers.length !== 0 ? followers.map(follower => (<FollowLine key={uuidv4()} follower={createFollow(follower, access_token.current)} activeUserID={user.id} following={followingCount} setFollowing={setFollowingCount} />)) : <div className={styles.emptyList}>
                                 <MdFollowTheSigns className={styles.emptyListIcon} />
                                 <span>O perfil ainda não é seguido por ninguém. Quando ele tiver seguidores, eles aparecerão aqui!</span>
                             </div> : <div className={styles.loadingCircle}></div>}
@@ -414,12 +562,100 @@ export default function MainPage() {
 
                     setFollowers(null);
                     break;
-                case 'configs':
-
-                    setPageContent(
+                case 'editProfile':
+                    pagePath = '/home';
+                    pageContent = (
                         <>
-                            {window.history.replaceState(null, '', '/home')}
-                            <SectionHeader key={uuidv4()} title={"Configurações"} Icon={FaCog} />
+                            <SectionHeader key={uuidv4()} title={"Editar Perfil"} Icon={FaUserEdit} />
+
+                            <form onSubmit={handleUpdateProfile} className={styles.updateContainer}>
+
+
+
+
+
+                                <div className={styles.updatePhotoContainer}>
+                                    <label htmlFor="editPhoto">Foto</label>
+                                    <div id="editPhoto" onClick={handleAvatarClick}>{newPhoto ? <AvatarPhoto key={user.id + '1'} onClick={handleAvatarClick} profileName={editableProfile.fullname}>{newPhoto}</AvatarPhoto> : <AvatarPhoto key={user.id + '2'} profileName={editableProfile.fullname}>{editableProfile.avatar}</AvatarPhoto>}</div>
+                                    <span className={styles.errorMessage} id="photoLine">{errorMessage}</span>
+
+
+                                    <input ref={avatarInputRef} type="file" name="" id="" accept="image/*" onChange={handleAvatarSend} />
+                                </div>
+
+
+
+
+
+
+
+
+                                <div className={styles.formField}>
+                                    <label htmlFor="editName">Nome</label>
+                                    <input type="text" id="editName" onChange={(e) => setEditableProfile((editableProfile) => ({ ...editableProfile, name: e.target.value }))} defaultValue={editableProfile.name || ""} placeholder="Digite seu Nome" maxLength="50" required />
+
+                                </div>
+                                <div className={styles.formField}>
+                                    <label htmlFor="editLastname">Sobrenome</label>
+                                    <input type="text" id="editLastname" onChange={(e) => setEditableProfile((editableProfile) => ({ ...editableProfile, lastname: e.target.value }))} defaultValue={editableProfile.lastname || ""} placeholder="Digite seu Sobrenome" maxLength="100" required />
+                                </div>
+                                <div className={styles.formField}>
+                                    <label htmlFor="editEmail">E-mail</label>
+                                    <input type="email" id="editEmail" onChange={(e) => setEditableProfile((editableProfile) => ({ ...editableProfile, email: e.target.value }))} defaultValue={editableProfile.email || ""} placeholder="Digite seu E-mail" maxLength="255" required />
+                                </div>
+                                <span className={styles.errorMessage} id="emailLine">{errorMessage}</span>
+                                <div className={styles.formField}>
+                                    <label htmlFor="editBio">Biografia</label>
+                                    <textarea id="editBio" maxLength="255" autoComplete="off" rows="4" onChange={(e) => setEditableProfile((editableProfile) => ({ ...editableProfile, bio: e.target.value }))} defaultValue={editableProfile.bio || ""} ></textarea>
+                                </div>
+                                <button type="submit">Editar</button>
+                            </form>
+
+
+
+
+                        </>
+                    );
+                    break;
+                case 'editPassword':
+
+                    pagePath = '/home'
+                    pageContent = (
+                        <>
+                            <SectionHeader key={uuidv4()} title={"Alterar Senha"} Icon={RiLockPasswordFill} />
+
+                            <form onSubmit={handleUpdatePassword} className={styles.updateContainer}>
+
+                                <div className={styles.formField}>
+                                    <label htmlFor="editOldPassword">Senha Atual</label>
+                                    <input type="password" id="editOldPassword" onChange={(e) => setEditablePassword((editablePassword) => ({ ...editablePassword, oldPassword: e.target.value }))} placeholder="Digite a senha atual" required />
+                                </div>
+                                <span className={styles.errorMessage} id="oldPasswordLine">{errorMessage}</span>
+                                <div className={styles.formField}>
+                                    <label htmlFor="editNewPassword">Nova Senha</label>
+                                    <input type="password" id="editNewPassword" onChange={(e) => setEditablePassword((editablePassword) => ({ ...editablePassword, newPassword: e.target.value }))} placeholder="Digite a nova senha" required />
+                                </div>
+                                <div className={styles.formField}>
+                                    <label htmlFor="editNewPasswordVerify">Confirmar Senha</label>
+                                    <input type="password" id="editNewPasswordVerify" onChange={(e) => setEditablePassword((editablePassword) => ({ ...editablePassword, newPasswordVerify: e.target.value }))} placeholder="Confirme a nova senha" required />
+                                </div>
+                                <span className={styles.errorMessage} id="newPasswordLine">{errorMessage}</span>
+
+
+                                <button type="submit">Alterar</button>
+                            </form>
+
+
+
+
+                        </>
+                    );
+                    break;
+                case 'configs':
+                    pagePath = '/home'
+                    pageContent = (
+                        <>
+                            < SectionHeader key={uuidv4()} title={"Configurações"} Icon={FaCog} />
                             <div className={styles.menuConfigs}>
 
                                 {theme === "light" || theme === null ? <>
@@ -433,7 +669,14 @@ export default function MainPage() {
                                         <span>Ativar Modo Claro</span>
                                     </div>
                                 </>}
-
+                                <div className={styles.configOption} onClick={() => changePage('editProfile')}>
+                                    <FaUserEdit className={styles.icon} />
+                                    <span>Editar Perfil</span>
+                                </div>
+                                <div className={styles.configOption} onClick={() => changePage('editPassword')}>
+                                    <RiLockPasswordFill className={styles.icon} />
+                                    <span>Alterar Senha</span>
+                                </div>
                             </div>
 
 
@@ -445,13 +688,18 @@ export default function MainPage() {
                     break;
             }
 
-
+            if (pagePath) {
+                window.history.replaceState(null, '', pagePath)
+            }
+            if (pageContent) {
+                setPageContent(pageContent);
+            }
         }
 
 
 
 
-    }, [forceReloadTrigger, theme, externalPosts])
+    }, [forceReloadTrigger, theme, externalPosts, editableProfile, editablePassword, errorMessage, newPhoto])
 
     return (user ? <>
 
@@ -478,9 +726,9 @@ export default function MainPage() {
                                 </div>
 
                             </div>
-                            <div className={styles.BottonHeader}>
-                                <span onClick={handleFollowing}><b>{user.following}</b> Seguindo </span>
-                                <span onClick={handleFollowers}><b>{user.followers}</b> Seguidores</span>
+                            <div className={styles.BottomHeader}>
+                                <span className={styles.followersOption} onClick={handleFollowing}><b>{followingCount}</b> Seguindo </span>
+                                <span className={styles.followersOption} onClick={handleFollowers}><b>{user.followers}</b> Seguidores</span>
                             </div>
                         </div>
                         <div className={styles.menuLeftContainer}>
@@ -524,7 +772,10 @@ export default function MainPage() {
 
                     </div>
                     <div className={styles.rightSide}>
-
+                        <SearchBox />
+                        <div className={styles.suggestionBox}>
+                            {usersSuggestion ? usersSuggestion.map(suggestion => (<FollowLine key={suggestion.username} follower={createFollow(suggestion, access_token.current)} activeUserID={user.id} following={followingCount} setFollowing={setFollowingCount} small="true" />)) : <LoadingCircle />}
+                        </div>
                     </div>
 
                 </div>

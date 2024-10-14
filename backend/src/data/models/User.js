@@ -41,9 +41,7 @@ const User = database.define('users', {
         defaultValue: '0'
     },
     bio: {
-        type: Sequelize.SMALLINT,
-        allowNull: false,
-        defaultValue: ''
+        type: Sequelize.STRING(300),
     }
 
 

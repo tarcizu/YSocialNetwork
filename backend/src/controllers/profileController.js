@@ -1,9 +1,8 @@
 
 const { findAllOtherUserPostsbyID } = require("../services/posts/findOtherUserPostService");
-const { findAllPostsbyID } = require("../services/posts/findPostsService");
 const { findFollowersByID } = require("../services/users/findFollowers");
 const { findFollowingByID } = require("../services/users/findFollowing");
-const { findUserbyUsername, findOtherUserbyUsername } = require("../services/users/findUserService");
+const { findUserbyUsername } = require("../services/users/findUserService");
 
 async function getProfile(request, response) {
     console.log("\n----------------ROUTE STARTED----------------");

@@ -19,6 +19,7 @@ function createUser(data, access_token) {
         avatar: data.avatar,
         following: data.followingCount,
         followers: data.followerCount,
+        postCount: parseInt(data.postCount),
         access_level: data.access_level,
         verify_level: data.verify_level,
         createdData: data.createdAt,

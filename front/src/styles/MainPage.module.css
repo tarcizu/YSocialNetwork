@@ -38,10 +38,7 @@
 
 .nameBadge {
     display: flex;
-
     width: 100%;
-
-
 }
 
 #fullname {
@@ -158,14 +155,14 @@
     flex-direction: row;
 }
 
-.BottonHeader {
+.BottomHeader {
     color: var(--ContentColor);
     margin-top: 10px;
     text-align: center;
 
 }
 
-.BottonHeader span {
+.BottomHeader span {
     cursor: pointer;
 
 }
@@ -184,12 +181,129 @@
     margin-left: 20%;
     display: flex;
     flex-direction: column;
+    gap: 15px;
 }
 
 .configOption {
     color: var(--ContentColor);
-
+    cursor: pointer;
     font-size: 25px;
     justify-content: flex-start;
     align-content: flex-start;
+}
+
+.followersOption:hover {
+
+    text-decoration: underline;
+}
+
+.suggestionBox {
+
+    display: flex;
+    flex-direction: column;
+    border: 2px solid var(--ContentColor);
+    border-radius: 20px;
+    margin: 20px 10px;
+}
+
+.updateContainer {
+
+
+    display: flex;
+    flex-direction: column;
+    margin: 30px 20px 0 20px;
+    align-items: center;
+
+}
+
+.updatePhotoContainer {
+    width: 30%;
+    height: auto;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+}
+
+.updatePhotoContainer input {
+
+    display: none;
+}
+
+.updatePhotoContainer img {
+
+    width: 100%;
+    aspect-ratio: 1 /1;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.updatePhotoContainer label {
+
+    font-size: 20px;
+    font-weight: bold;
+    color: var(--ContentColor);
+}
+
+.updateContainer h1 {
+    color: var(--ContentColor);
+}
+
+.updateContainer button {
+
+
+    margin-top: 20px;
+    width: 90%;
+    height: 50px;
+    border-radius: 25px;
+    font-size: 25px;
+    background-color: var(--ButtonColor);
+    color: white;
+}
+
+.errorMessage {
+    margin-left: 5%;
+    color: red;
+    align-self: self-start;
+    display: none;
+}
+
+
+.formField {
+    width: 90%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.formField input {
+    border-radius: 5px;
+    width: 100%;
+    height: 80%;
+    padding: 10px;
+    font-size: 20px;
+    color: var(--ContentColor);
+    background-color: var(--ThemeColor);
+}
+
+.formField textarea {
+    border-radius: 5px;
+    width: 100%;
+    height: auto;
+    padding: 10px;
+    font-size: 20px;
+    color: var(--ContentColor);
+    background-color: var(--ThemeColor);
+    resize: none;
+
+}
+
+.formField label {
+    font-size: 20px;
+    font-weight: bold;
+    align-self: flex-start;
+    color: var(--ContentColor);
+
 }

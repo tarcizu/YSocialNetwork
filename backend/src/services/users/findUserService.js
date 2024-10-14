@@ -26,6 +26,14 @@ async function findUserbyUsername(username, id = null) {
                     )`),
                             'followerCount'
                         ],
+                        [
+                            Sequelize.literal(`(
+                        SELECT COUNT(*)
+                        FROM posts AS p
+                        WHERE p."userID" = users.id
+                    )`),
+                            'postCount'
+                        ],
 
 
 

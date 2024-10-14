@@ -4,15 +4,19 @@ const { createHash, validateHash } = require('./hashController');
 const { createCookie, createToken } = require('./jwtController');
 const { addFollower } = require('../services/users/addFollowerService');
 const { removeFollower } = require('../services/users/removeFollowerService');
+const { findUserSuggestions } = require('../services/users/findUserSuggestionService');
+const { updateUserProfile, updateUserPassword } = require('../services/users/updateUsersService');
 
 
-function buildUser(username, password, email, name, lastName) {
+function buildUser(username, password, email, name, lastName, bio, avatar) {
     return {
         username: username,
         password: password,
         email: email,
         name: name,
-        lastname: lastName
+        lastname: lastName,
+        bio: bio || null,
+        avatar: avatar || null
 
     };
 
@@ -151,11 +155,99 @@ async function removeUserFollower(request, response) {
 
     }
 }
+async function usersSuggestion(request, response) {
+    const userID = request.body.id;
+    console.log("\n----------------ROUTE STARTED----------------");
+    console.log(`Rota de Sugestão de perfis acessada:\nID do Usuário: ${userID ? userID : "[NÃO ENVIADO]"}\n`);
 
+    const result = await findUserSuggestions(userID);
+    if (result === -1 || result === -2) {
+
+        console.log(`\nFalha ao obter sugestões de perfis: Error desconhecido`);
+        console.log("-----------------ROUTE ENDED-----------------");
+        response.sendStatus(400);
+    } else {
+        console.log(`\nSugestões de perfis obtidas com sucesso!: ${result.length} Sugestões`);
+        console.log("-----------------ROUTE ENDED-----------------");
+        response.status(200).json(result);
+
+    }
+
+}
+async function updateProfile(request, response) {
+    const userID = request.body.id;
+    const updatedUser = request.body.user;
+    const updateData = {
+        name: updatedUser.name,
+        lastname: updatedUser.lastname,
+        email: updatedUser.email,
+        bio: updatedUser.bio,
+        avatar: updatedUser.avatar
+    }
+
+    console.table(updatedUser);
+
+    console.log("\n----------------ROUTE STARTED----------------");
+    console.log(`Rota de Atualização de perfil acessada:\nID do Usuário: ${userID ? userID : "[NÃO ENVIADO]"}\n`);
+
+
+
+    const result = await updateUserProfile(userID, updateData);
+    if (result === -1) {
+        console.log(`\nFalha atualizar perfil: Error desconhecido`);
+        console.log("-----------------ROUTE ENDED-----------------");
+        response.sendStatus(400);
+
+    }
+    else if (result === -2) {
+        console.log(`\nPerfil atualizado com sucesso`);
+        console.log("-----------------ROUTE ENDED-----------------");
+        response.sendStatus(200);
+
+    } else if (result === -3) {
+        console.log(`\nFalha atualizar perfil: E-mail "${updateData.email}" já existe no Banco de Dados`);
+        console.log("-----------------ROUTE ENDED-----------------");
+        response.sendStatus(409);
+    }
+
+
+
+}
+async function updatePassword(request, response) {
+    const userID = request.body.id;
+    const updatedPassword = request.body.password;
+    console.log("\n----------------ROUTE STARTED----------------");
+    console.log(`Rota de Alteração de senha acessada:\nID do Usuário: ${userID ? userID : "[NÃO ENVIADO]"}\n`);
+    const user = await findUserService.findUserbyID(userID);
+    if (await validateHash(updatedPassword.oldPassword, user.password)) {
+        const result = await updateUserPassword(userID, await createHash(updatedPassword.newPassword));
+
+        if (result === -1) {
+            console.log(`\nFalha alterar senha: Error desconhecido`);
+            console.log("-----------------ROUTE ENDED-----------------");
+            response.sendStatus(400);
+
+        } else if (result === -2) {
+            console.log(`\nSenha alterada com sucesso`);
+            console.log("-----------------ROUTE ENDED-----------------");
+            response.sendStatus(200);
+
+        }
+
+    } else {
+        console.log(`\nFalha alterar senha: Senha do usuário não confere`);
+        console.log("-----------------ROUTE ENDED-----------------");
+        response.sendStatus(401);
+    }
+
+}
 module.exports = {
 
     createUser,
     login,
     addUserFollower,
-    removeUserFollower
+    removeUserFollower,
+    usersSuggestion,
+    updateProfile,
+    updatePassword
 }

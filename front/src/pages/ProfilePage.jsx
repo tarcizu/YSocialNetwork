@@ -10,7 +10,7 @@ import createUser from "../models/User";
 import LoadingCircle from "../components/LoadingCircle";
 import createPost from "../models/Post";
 import { auth } from "../services/auth/authService";
-import { changeTheme, setInitialTheme } from "../controlller/themeController";
+import { changeTheme, setInitialTheme } from "../controller/themeController";
 import ProfileHeader from "../components/ProfileHeader";
 import { getProfile } from "../services/profile/getProfileService";
 import { getProfileTimeline } from "../services/profile/getProfileTimelineService";

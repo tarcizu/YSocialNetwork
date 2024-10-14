@@ -99,3 +99,7 @@
     flex-direction: row;
     gap: 5px;
 }
+
+.followersOption:hover {
+    text-decoration: underline;
+}

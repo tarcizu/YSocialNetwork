@@ -6,10 +6,10 @@ function createFollow(data, access_token) {
 
 
 
-    follow.id = data.id;
-    follow.followerID = data.followerID;
-    follow.followedID = data.followedID;
-    follow.isFollowed = data.isFollowed;
+    follow.id = data.id || null;
+    follow.followerID = data.followerID || null;
+    follow.followedID = data.followedID || null;
+    follow.isFollowed = data.isFollowed || false;
 
 
     if (data.Followed) {
@@ -43,6 +43,18 @@ function createFollow(data, access_token) {
         };
 
 
+    } else {
+
+        follow.user = {
+            id: data.id,
+            username: data.username,
+            name: data.name,
+            lastname: data.lastname,
+            fullname: `${data.name} ${data.lastname}`,
+            shortFullname: `${data.name} ${data.lastname.split(" ").pop()}`,
+            avatar: data.avatar,
+            verify_level: data.verify_level,
+        };
     }
 
 

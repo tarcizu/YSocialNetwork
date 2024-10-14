@@ -3,7 +3,7 @@ import '../index.css'
 import styles from '../styles/SignUpPage.module.css'
 import { signup } from '../services/login/signUpService'
 import { Link, useNavigate } from "react-router-dom";
-import { setInitialTheme } from "../controlller/themeController";
+import { setInitialTheme } from "../controller/themeController";
 
 
 
@@ -60,7 +60,7 @@ export default function SignUpPage() {
             containerErrorEmail.style.display = 'flex';
         }
         else {
-            navigate('/home');
+            navigate('/home', { replace: true });
         }
 
 

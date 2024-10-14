@@ -9,7 +9,7 @@ import Post from "../components/Post";
 import LoadingCircle from "../components/LoadingCircle";
 import createPost from "../models/Post";
 import { auth } from "../services/auth/authService";
-import { changeTheme, setInitialTheme } from "../controlller/themeController";
+import { changeTheme, setInitialTheme } from "../controller/themeController";
 import SectionHeader from "../components/SectionHeader";
 import { getPost } from "../services/post/getPostService";
 

@@ -16,6 +16,11 @@
     margin-bottom: 5px;
 }
 
+.repost span:hover {
+
+    text-decoration: underline;
+}
+
 .header {
 
     display: flex;
@@ -44,13 +49,20 @@
     font-weight: bold;
 }
 
+#fullname:hover {
+    text-decoration: underline;
+}
+
 #username {
     width: max-content;
     cursor: pointer;
     font-size: 18px;
 }
 
-.LikeIcon {}
+#username:hover {
+    text-decoration: underline;
+}
+
 
 .LikeSelectedIcon {
     color: red;
@@ -60,20 +72,16 @@
     transform: scaleY(1.5);
 }
 
+
+
 .RepostSelectedIcon {
     transform: scaleY(1.5);
     color: rgb(0, 186, 124);
 }
 
-.SaveIcon {}
-
 .SaveSelectedIcon {
     color: blue;
 }
-
-
-
-
 
 .content p {
     margin-left: 70px;

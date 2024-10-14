@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
 import styles from './ProfileHeader.module.css';
 import AvatarPhoto from './AvatarPhoto';
-import { formattedSignUpDate } from '../controlller/dateController';
+import { formattedSignUpDate } from '../controller/dateController';
 import VerifyBadge from './VerifyBadge';
 
 
 
 
-const ProfileHeader = ({ user, editable = true, changePage, targetID, targetUsername, activeUserID = 0 }) => {
+const ProfileHeader = ({ user, editable = true, changePage, targetID, targetUsername, activeUserID = 0, following = null, setFollowing = null }) => {
 
     const [followed, SetFollowed] = useState(user.isFollowed);
+    const [followers, SetFollowers] = useState(parseInt(user.followers))
 
 
     const handleFollow = async (e) => {
@@ -17,6 +18,8 @@ const ProfileHeader = ({ user, editable = true, changePage, targetID, targetUser
         const result = await user.addFollower();
         if (result) {
             SetFollowed(true);
+            setFollowing((following) => following + 1);
+            SetFollowers((followers) => followers + 1);
         }
 
     }
@@ -25,6 +28,8 @@ const ProfileHeader = ({ user, editable = true, changePage, targetID, targetUser
         const result = await user.removeFollower();
         if (result) {
             SetFollowed(false);
+            setFollowing((following) => following - 1);
+            SetFollowers((followers) => followers - 1);
         }
 
 
@@ -81,8 +86,8 @@ const ProfileHeader = ({ user, editable = true, changePage, targetID, targetUser
                         </div>
                         <div className={styles.bottomRightSection}>
 
-                            <p onClick={() => handleFollowing()}><b>{user.following}</b> Seguindo </p>
-                            <p onClick={() => handleFollowers()}><b>{user.followers}</b> Seguidores</p>
+                            <p className={styles.followersOption} onClick={() => handleFollowing()}><b>{user.following}</b> Seguindo </p>
+                            <p className={styles.followersOption} onClick={() => handleFollowers()}><b>{followers}</b> Seguidores</p>
                         </div>
 
                     </div>
@@ -93,6 +98,8 @@ const ProfileHeader = ({ user, editable = true, changePage, targetID, targetUser
                 </div>
                 <div className={styles.bottomContainer}>
                     <p> Entrou em {formattedSignUpDate(user.createdData)}</p>
+                    {user.postCount > 0 ? <p> Já fez {user.postCount} Postagens</p> : <p> Ainda não fez postagens</p>}
+
                 </div>
 
 

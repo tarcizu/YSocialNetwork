@@ -118,6 +118,8 @@ const Post = ({ post, user = "", editable = true }) => {
                 <div className={styles.content} onClick={() => navigate(`/post/${post.author.username}/${post.id}`)}>
                     <p dangerouslySetInnerHTML={{ __html: contentPostFormatter(post.content) }}></p>
                 </div>
+                {post.image ? <img className={styles.image} src={post.image} alt="" /> : <></>}
+
                 <div className={styles.sendIdentify}><p>{`${formattedDate(post.createdData)} via ${post.source}`}</p></div>
                 <div className={styles.botton}>
                     <div className={editable ? styles.optionButton : styles.disableOptionButton} onClick={editable ? () => handleLikeButton() : undefined}>{hasLiked ? <FaHeart className={styles.LikeSelectedIcon} /> : <FaRegHeart className={styles.LikeIcon} />}

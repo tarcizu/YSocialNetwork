@@ -91,6 +91,7 @@
 }
 
 .sendIdentify {
+    margin-top: 10px;
     margin-left: 70px;
     margin-bottom: 10px;
 }
@@ -129,5 +130,12 @@
     display: inline;
     position: relative;
     top: 2px;
+
+}
+
+.image {
+    align-self: center;
+    max-width: 100%;
+    border-radius: 16px;
 
 }

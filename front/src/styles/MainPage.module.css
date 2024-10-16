@@ -223,6 +223,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    position: relative;
 
 }
 
@@ -248,18 +249,6 @@
 
 .updateContainer h1 {
     color: var(--ContentColor);
-}
-
-.updateContainer button {
-
-
-    margin-top: 20px;
-    width: 90%;
-    height: 50px;
-    border-radius: 25px;
-    font-size: 25px;
-    background-color: var(--ButtonColor);
-    color: white;
 }
 
 .errorMessage {
@@ -306,4 +295,29 @@
     align-self: flex-start;
     color: var(--ContentColor);
 
+}
+
+.editButton {
+    margin-top: 20px;
+    width: 90%;
+    height: 50px;
+    border-radius: 25px;
+    font-size: 25px;
+    background-color: var(--ButtonColor);
+    color: white;
+
+}
+
+.removeAvatarButton {
+    bottom: 0;
+    right: 0;
+    position: absolute;
+    border-radius: 25px;
+    cursor: pointer;
+    background-color: transparent;
+    border: none;
+}
+
+.trashIcon {
+    font-size: 20px;
 }

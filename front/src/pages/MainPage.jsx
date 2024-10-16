@@ -4,7 +4,7 @@ import styles from '../styles/MainPage.module.css';
 import { useNavigate, useLocation } from "react-router-dom";
 import { v4 as uuidv4 } from 'uuid';
 import cookies from 'js-cookie';
-import { FaSignOutAlt, FaUser, FaLightbulb, FaRegLightbulb, FaHome, FaHeart, FaBookmark, FaCog, FaUserEdit } from 'react-icons/fa';
+import { FaSignOutAlt, FaUser, FaLightbulb, FaRegLightbulb, FaHome, FaHeart, FaBookmark, FaCog, FaUserEdit, FaTrashAlt } from 'react-icons/fa';
 import { MdFollowTheSigns } from 'react-icons/md'
 import { RiLockPasswordFill } from "react-icons/ri";
 import Post from "../components/Post";
@@ -165,8 +165,21 @@ export default function MainPage() {
         }
     }
     const handleAvatarClick = async (e) => {
-
         avatarInputRef.current.click();
+    }
+    const handleRemoveAvatar = async (e) => {
+        e.preventDefault();
+        if (newPhoto) {
+            setNewPhoto(null);
+        }
+        if (editableProfile.avatar) {
+
+            setEditableProfile((editableProfile) => ({ ...editableProfile, avatar: null }));
+        }
+        setStartUploadPhoto(false);
+
+
+
 
     }
 
@@ -178,7 +191,7 @@ export default function MainPage() {
                 photoPlace.style.display = 'none';
 
                 if (startUploadPhoto) {
-                    const result = await UploadPhoto(base64Photo, user.name);
+                    const result = await UploadPhoto(base64Photo);
                     if (result === -1) {
                         setErrorMessage('Não foi possível atualizar a foto');
                         photoPlace.style.display = 'flex';
@@ -573,22 +586,14 @@ export default function MainPage() {
 
 
 
-
                                 <div className={styles.updatePhotoContainer}>
                                     <label htmlFor="editPhoto">Foto</label>
-                                    <div id="editPhoto" onClick={handleAvatarClick}>{newPhoto ? <AvatarPhoto key={user.id + '1'} onClick={handleAvatarClick} profileName={editableProfile.fullname}>{newPhoto}</AvatarPhoto> : <AvatarPhoto key={user.id + '2'} profileName={editableProfile.fullname}>{editableProfile.avatar}</AvatarPhoto>}</div>
+                                    <div className={styles.photoContainer} id="editPhoto" onClick={handleAvatarClick}>{newPhoto ? <AvatarPhoto key={user.id + '1' + newPhoto} onClick={handleAvatarClick} profileName={editableProfile.fullname}>{newPhoto}</AvatarPhoto> : <AvatarPhoto key={user.id + '2' + editableProfile.avatar} profileName={editableProfile.fullname}>{editableProfile.avatar}</AvatarPhoto>}</div>
+                                    {editableProfile.avatar || newPhoto ? <button className={styles.removeAvatarButton} onClick={handleRemoveAvatar}><FaTrashAlt className={styles.trashIcon} /></button> : <></>}
                                     <span className={styles.errorMessage} id="photoLine">{errorMessage}</span>
-
 
                                     <input ref={avatarInputRef} type="file" name="" id="" accept="image/*" onChange={handleAvatarSend} />
                                 </div>
-
-
-
-
-
-
-
 
                                 <div className={styles.formField}>
                                     <label htmlFor="editName">Nome</label>
@@ -608,8 +613,8 @@ export default function MainPage() {
                                     <label htmlFor="editBio">Biografia</label>
                                     <textarea id="editBio" maxLength="255" autoComplete="off" rows="4" onChange={(e) => setEditableProfile((editableProfile) => ({ ...editableProfile, bio: e.target.value }))} defaultValue={editableProfile.bio || ""} ></textarea>
                                 </div>
-                                <button type="submit">Editar</button>
-                            </form>
+                                <button className={styles.editButton} type="submit">Editar</button>
+                            </form >
 
 
 

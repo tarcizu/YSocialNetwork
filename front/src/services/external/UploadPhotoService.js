@@ -1,4 +1,4 @@
-export async function UploadPhoto(photo, name) {
+export async function UploadPhoto(photo) {
 
 
     const formData = new FormData();

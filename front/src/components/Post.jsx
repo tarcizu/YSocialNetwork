@@ -1,26 +1,41 @@
-import React, { useState } from 'react';
-import { FaRegHeart, FaHeart, FaRetweet, FaRegBookmark, FaBookmark, FaLink } from 'react-icons/fa'
+import React, { useEffect, useState } from 'react';
+import { FaRegHeart, FaHeart, FaRetweet, FaRegBookmark, FaBookmark, FaLink, FaTrashAlt, FaShareAlt } from 'react-icons/fa'
 import styles from './Post.module.css';
 import { formattedDate, timeAgo } from '../controller/dateController';
 import { contentPostFormatter } from '../controller/contentFormatterController';
 import AvatarPhoto from './AvatarPhoto';
 import { useNavigate } from 'react-router-dom';
 import VerifyBadge from './VerifyBadge';
+import { HiDotsHorizontal } from "react-icons/hi";
 
 
 
 
 
-const Post = ({ post, user = "", editable = true }) => {
+const Post = ({ post, user = "", editable = true, changePage, searchHashtag }) => {
+
 
 
     const navigate = useNavigate();
+    const [visible, setVisible] = useState(true);
     const [hasLiked, setHasLiked] = useState(post.hasLiked);
     const [hasSaved, setHasSaved] = useState(post.hasSaved);
     const [hasReposted, setHasReposted] = useState(post.hasReposted);
     const [likes, setLikes] = useState(post.likes);
     const [reposts, setReposts] = useState(post.reposts);
+    const [menuVisibility, setMenuVisibility] = useState(false);
 
+
+
+    useEffect(() => {
+        const profileLinks = document.querySelectorAll('.profileLink');
+        profileLinks.forEach(link => { link.addEventListener('click', handleProfileLink) })
+        if (editable) {
+            const hashtags = document.querySelectorAll('.hashtag');
+            hashtags.forEach(hashtag => { hashtag.addEventListener('click', handleSearchHashtag) })
+        }
+
+    })
 
     const handleLikeButton = async () => {
 
@@ -68,8 +83,9 @@ const Post = ({ post, user = "", editable = true }) => {
             }
         }
     }
-    const handleShare = async () => {
-        console.log("Clicou em compartilhar");
+
+    const handleShareButton = async () => {
+
         if (navigator.share !== undefined) {
 
             navigator.share({
@@ -78,15 +94,50 @@ const Post = ({ post, user = "", editable = true }) => {
                 url: `/post/${post.author.username}/${post.id}`
             })
         }
+    }
+    const handleCopyLinkButton = async () => {
+
+        if (navigator.clipboard !== undefined) {
+            navigator.clipboard.writeText(window.location.origin + `/post/${post.author.username}/${post.id}`);
+        }
+        console.log("Link Copiado para Area de Transferência");
 
     }
 
+    const handleDeleteButton = async () => {
 
+        const result = await post.delete();
+
+        if (result) {
+            setVisible(false);
+        }
+
+
+    }
+
+    const handleSearchHashtag = async (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        searchHashtag(e.target.innerText);
+        changePage('hashtag');
+        console.log(`Clicou na Hashtag ${e.target.innerText}`);
+
+    }
+
+    const handleProfileLink = async (e) => {
+        e.stopPropagation();
+    }
+
+    const showMenu = async () => {
+        setMenuVisibility(true);
+    }
+    const hideMenu = async () => {
+        setMenuVisibility(false);
+    }
 
     return (
         <>
-
-            <div className={styles.post}>
+            {visible ? <div className={styles.post}>
                 {post.isRepost ? <>
                     <div className={styles.repost} >
                         <span onClick={() => navigate(`/profile/${post.repostAuthor.username}`)}><FaRetweet className={styles.resizedIcon} /> {post.repostAuthor.id === user.id ? 'Voce' : post.repostAuthor.fullname} repostou</span>
@@ -111,7 +162,11 @@ const Post = ({ post, user = "", editable = true }) => {
 
                         <span id={styles.username} onClick={() => navigate(`/profile/${post.author.username}`)}>@{post.author.username}</span>
                     </div>
+
+
                     <span id={styles.timeAgo}>{timeAgo(post.createdData)}</span>
+                    <HiDotsHorizontal className={styles.dropdownMenuButton} onClick={showMenu} />
+
 
 
                 </div>
@@ -128,9 +183,25 @@ const Post = ({ post, user = "", editable = true }) => {
                         <span>{reposts}</span>
                     </div>
                     <div className={editable ? styles.optionButton : styles.disableOptionButton} onClick={editable ? () => handleSaveButton() : undefined}>{hasSaved ? <FaBookmark className={styles.SaveSelectedIcon} /> : <FaRegBookmark className={styles.SaveIcon} />}</div>
-                    <div className={styles.optionButton} onClick={() => handleShare()}> <FaLink /> </div>
+
                 </div>
-            </div>
+                {menuVisibility ? <div onMouseLeave={hideMenu} className={styles.dropdownMenu}>
+                    {post.author.id === user.id ? <div className={styles.dropdownMenuOption} onClick={() => handleDeleteButton()}>
+                        <FaTrashAlt />
+                        <span>Excluir</span>
+                    </div> : <></>}
+                    <div className={styles.dropdownMenuOption} onClick={() => handleCopyLinkButton()}>
+                        <FaLink />
+                        <span>Copiar Link</span>
+                    </div>
+                    <div className={styles.dropdownMenuOption} onClick={() => handleShareButton()}>
+                        <FaShareAlt />
+                        <span>Compartilhar</span>
+                    </div>
+                </div> : <></>}
+
+            </div> : <></>}
+
         </>
     );
 }

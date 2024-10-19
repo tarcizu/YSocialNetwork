@@ -2,47 +2,50 @@
 
     width: calc(100% - 40px);
     margin: 10px 20px;
+    min-height: calc(20vh - 20px);
     max-height: 30vh;
     margin-bottom: 5px;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    position: relative;
+    border-bottom: 2px solid var(--ContentColor);
 }
 
-.topContainer {
+.leftContainer {
+
+    width: 15%;
+    aspect-ratio: 1/1;
+
+}
+
+.rightContainer {
+
+    width: 85%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-left: 10px;
+
+}
+
+
+.topSection {
     width: 100%;
     height: 50%;
     display: flex;
     flex-direction: row;
+    justify-content: space-between;
+
 }
 
-.leftSection {
 
-    width: 15%;
-    aspect-ratio: 1/1;
-}
-
-.rightSection {
-    width: calc(85% - 20px);
-    margin-left: 20px;
+.leftSide {
+    width: auto;
+    height: 100%;
     display: flex;
     flex-direction: column;
-}
 
-.topRightSection {
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-}
-
-.names {
-    width: 50%;
-}
-
-.nameBadge {
-    font-size: 2em;
-    font-weight: bold;
-    display: flex;
-    flex-direction: row;
 }
 
 .names span {
@@ -56,13 +59,39 @@
     margin-top: -5px;
 }
 
-.button {
-    width: 50%;
+.nameBadge {
+    font-size: 2em;
+    font-weight: bold;
     display: flex;
-    margin-top: 20px;
+    flex-direction: row;
+}
+
+.follows {
+    color: var(--ContentColor);
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+}
+
+.followersOption:hover {
+    text-decoration: underline;
+}
+
+
+.rightSide {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+
+}
+
+.button {
+    width: auto;
+    height: 100%;
+    display: flex;
     flex-direction: column;
-    align-items: center;
     justify-content: center;
+    margin-right: 10px;
 }
 
 .button button {
@@ -76,30 +105,54 @@
     border: 2px solid var(--ContentColor);
 }
 
-.middleContainer {
-    width: calc(100% - 40px);
-    margin: 0 20px 30px 20px;
-    height: calc(40% - 30px);
-    font-size: larger;
-    font-weight: bold;
-}
-
-.bottomContainer {
-    width: calc(100% - 40px);
-    margin: 0 20px;
-    font-size: larger;
-    font-weight: bold;
-    height: calc(10% - 40px);
-
-}
-
-.bottomRightSection {
+.dropdownMenuButton {
+    margin-left: 20px;
+    margin-top: 5px;
+    font-size: 20px;
+    color: var(--ContentColor);
     cursor: pointer;
+}
+
+.dropdownMenu {
+    position: absolute;
+    top: 5px;
+    right: 0;
+    background-color: var(--ThemeColor);
+    border: 2px solid var(--ContentColor);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+}
+
+.dropdownMenuOption {
     display: flex;
     flex-direction: row;
-    gap: 5px;
+    cursor: pointer;
 }
 
-.followersOption:hover {
-    text-decoration: underline;
+.dropdownMenuOption span {
+    color: var(--ContentColor);
+    margin-left: 5px;
+}
+
+.dropdownMenuOption svg {
+    color: var(--ContentColor);
+    margin-top: 3px;
+}
+
+.middleSection {
+    margin: 10px 0;
+}
+
+.middleSection p {
+    font-size: 18px;
+}
+
+.bottomSection {
+    justify-self: flex-end;
+    font-size: 14px;
+    align-items: flex-end;
+    margin-bottom: 10px;
 }

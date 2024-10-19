@@ -3,7 +3,8 @@ import styles from './ProfileHeader.module.css';
 import AvatarPhoto from './AvatarPhoto';
 import { formattedSignUpDate } from '../controller/dateController';
 import VerifyBadge from './VerifyBadge';
-
+import { HiDotsHorizontal } from "react-icons/hi";
+import { FaUserEdit, FaLink, FaShareAlt } from "react-icons/fa"
 
 
 
@@ -11,6 +12,7 @@ const ProfileHeader = ({ user, editable = true, changePage, targetID, targetUser
 
     const [followed, SetFollowed] = useState(user.isFollowed);
     const [followers, SetFollowers] = useState(parseInt(user.followers))
+    const [menuVisibility, setMenuVisibility] = useState(false);
 
 
     const handleFollow = async (e) => {
@@ -49,23 +51,52 @@ const ProfileHeader = ({ user, editable = true, changePage, targetID, targetUser
         targetUsername.current = user.username;
         changePage('followers');
 
+    }
 
+    const handleEditProfileButton = async (e) => {
+        changePage('editProfile');
+    }
 
+    const handleShareButton = async () => {
+
+        if (navigator.share !== undefined) {
+
+            navigator.share({
+                title: 'Perfil do Y',
+                text: `@${user.username}`,
+                url: `/profile/${user.username}`
+            })
+        }
+    }
+    const handleCopyLinkButton = async () => {
+
+        if (navigator.clipboard !== undefined) {
+            navigator.clipboard.writeText(window.location.origin + `/profile/${user.username}`);
+        }
+        console.log("Link Copiado para Area de Transferência");
 
     }
 
+
+    const showMenu = async () => {
+        setMenuVisibility(true);
+    }
+    const hideMenu = async () => {
+        setMenuVisibility(false);
+    }
 
 
 
     return (
         <>
             <div className={styles.profileHeader}>
-                <div className={styles.topContainer}>
-                    <div className={styles.leftSection}>
-                        <AvatarPhoto profileName={user.fullname}>{user.avatar}</AvatarPhoto>
-                    </div>
-                    <div className={styles.rightSection}>
-                        <div className={styles.topRightSection}>
+                <div className={styles.leftContainer}>
+                    <AvatarPhoto profileName={user.fullname}>{user.avatar}</AvatarPhoto>
+                </div>
+                <div className={styles.rightContainer}>
+
+                    <div className={styles.topSection}>
+                        <div className={styles.leftSide}>
                             <div className={styles.names}>
                                 <div className={styles.nameBadge}>
 
@@ -75,32 +106,56 @@ const ProfileHeader = ({ user, editable = true, changePage, targetID, targetUser
                                 </div>
                                 <h2>@{user.username}</h2>
                             </div>
+                            <div className={styles.follows}>
+                                <p className={styles.followersOption} onClick={() => handleFollowing()}><b>{user.following}</b> Seguindo </p>
+                                <p className={styles.followersOption} onClick={() => handleFollowers()}><b>{followers}</b> Seguidores</p>
+
+                            </div>
+                        </div>
+
+                        <div className={styles.rightSide}>
                             {editable && activeUserID !== user.id ? followed ?
                                 < div className={styles.button} onClick={() => handleUnFollow()}>
-                                    <button>Deixar de Seguir</button>
+                                    <button>Deixar <br />de Seguir</button>
                                 </div> : <div className={styles.button} onClick={() => handleFollow()}>
                                     <button>Seguir</button>
                                 </div> : <></>
 
                             }
-                        </div>
-                        <div className={styles.bottomRightSection}>
-
-                            <p className={styles.followersOption} onClick={() => handleFollowing()}><b>{user.following}</b> Seguindo </p>
-                            <p className={styles.followersOption} onClick={() => handleFollowers()}><b>{followers}</b> Seguidores</p>
+                            <HiDotsHorizontal className={styles.dropdownMenuButton} onClick={showMenu} />
                         </div>
 
                     </div>
-                </div>
-                <div className={styles.middleContainer}>
-                    <p>{user.bio}</p>
+
+
+
+
+
+
+                    <div className={styles.middleSection}>
+                        <p>{user.bio}</p>
+                    </div>
+                    <div className={styles.bottomSection}>
+                        <p> Membro desde {formattedSignUpDate(user.createdData)} - {user.postCount > 0 ? `Já fez ${user.postCount} Postagens` : `Ainda não fez postagens`}</p>
+                    </div>
 
                 </div>
-                <div className={styles.bottomContainer}>
-                    <p> Entrou em {formattedSignUpDate(user.createdData)}</p>
-                    {user.postCount > 0 ? <p> Já fez {user.postCount} Postagens</p> : <p> Ainda não fez postagens</p>}
+                {menuVisibility ? <div onMouseLeave={hideMenu} className={styles.dropdownMenu}>
+                    {editable && activeUserID === user.id ? <div className={styles.dropdownMenuOption} onClick={() => handleEditProfileButton()}>
+                        <FaUserEdit />
+                        <span>Editar Perfil</span>
+                    </div> : <></>}
+                    <div className={styles.dropdownMenuOption} onClick={() => handleCopyLinkButton()}>
+                        <FaLink />
+                        <span>Copiar Link</span>
+                    </div>
+                    <div className={styles.dropdownMenuOption} onClick={() => handleShareButton()}>
+                        <FaShareAlt />
+                        <span>Compartilhar</span>
+                    </div>
+                </div> : <></>}
+            </div>
 
-                </div>
 
 
 
@@ -109,12 +164,6 @@ const ProfileHeader = ({ user, editable = true, changePage, targetID, targetUser
 
 
 
-
-
-
-
-
-            </div >
 
 
         </>

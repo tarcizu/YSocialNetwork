@@ -16,14 +16,16 @@ body {
 }
 
 
-.hashtag {
+.hashtag,
+.profileLink {
 
   text-decoration: none;
   color: rgb(29, 155, 240);
   cursor: pointer;
 }
 
-.hashtag:hover {
+.hashtag:hover,
+.profileLink:hover {
 
   text-decoration: underline;
 

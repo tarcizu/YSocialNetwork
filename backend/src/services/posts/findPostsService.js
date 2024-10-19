@@ -29,7 +29,7 @@ async function findAllPostsbyID(id) {
                     {
                         model: User,
                         as: 'PostUser',
-                        attributes: ['id', 'username', 'name', 'lastname', 'avatar']
+                        attributes: ['id', 'username', 'name', 'lastname', 'avatar', 'verify_level']
                     },
                     {
                         model: Like,

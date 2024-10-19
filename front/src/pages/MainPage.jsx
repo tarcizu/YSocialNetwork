@@ -4,7 +4,7 @@ import styles from '../styles/MainPage.module.css';
 import { useNavigate, useLocation } from "react-router-dom";
 import { v4 as uuidv4 } from 'uuid';
 import cookies from 'js-cookie';
-import { FaSignOutAlt, FaUser, FaLightbulb, FaRegLightbulb, FaHome, FaHeart, FaBookmark, FaCog, FaUserEdit, FaTrashAlt } from 'react-icons/fa';
+import { FaSignOutAlt, FaUser, FaLightbulb, FaRegLightbulb, FaHome, FaHeart, FaBookmark, FaCog, FaUserEdit, FaTrashAlt, FaSearch, FaHashtag } from 'react-icons/fa';
 import { MdFollowTheSigns } from 'react-icons/md'
 import { RiLockPasswordFill } from "react-icons/ri";
 import Post from "../components/Post";
@@ -54,8 +54,11 @@ export default function MainPage() {
     const [externalPost, setExternalPost] = useState(null);
     const [followers, setFollowers] = useState(null);
     const [following, setFollowing] = useState(null);
+    const [searchTerm, setSearchTerm] = useState(null);
+    const [searchHashtag, setSearchHashtag] = useState(null);
     const [followingCount, setFollowingCount] = useState(0);
     const [usersSuggestion, setUsersSuggestion] = useState(null);
+
 
 
     const avatarInputRef = useRef(null);
@@ -443,6 +446,14 @@ export default function MainPage() {
                         break;
                     case 'editPassword':
                         break;
+                    case 'result':
+
+                        break;
+                    case 'hashtag':
+
+                        break;
+                    case 'editPassword':
+                        break;
                     default:
                         break;
 
@@ -476,7 +487,7 @@ export default function MainPage() {
 
                             <PostBox key={uuidv4()} changePage={changePage} access_token={access_token.current} navigate={navigate} />
                             {
-                                timeline ? timeline.length !== 0 ? timeline.map(post => (<Post key={uuidv4()} user={user} post={createPost(post, access_token.current)} />)) : <div className={styles.emptyList}>
+                                timeline ? timeline.length !== 0 ? timeline.map(post => (<Post key={uuidv4()} user={user} post={createPost(post, access_token.current)} changePage={changePage} searchHashtag={setSearchHashtag} />)) : <div className={styles.emptyList}>
                                     <FaHome className={styles.emptyListIcon} />
                                     <span>Sua timeline está vazia. Comece a seguir pessoas e interagir para ver atualizações e postagens aqui!</span>
                                 </div> : < div className={styles.loadingCircle} ></div >}
@@ -489,7 +500,7 @@ export default function MainPage() {
                     pageContent = (
                         <>
                             <ProfileHeader key={uuidv4()} user={user} changePage={changePage} targetUsername={targetUserUsername} targetID={targetUserID} activeUserID={user.id} following={followingCount} setFollowing={setFollowingCount} />
-                            {posts ? posts.length !== 0 ? posts.map(post => (<Post key={uuidv4()} user={user} post={createPost(post, access_token.current)} />)) : <div className={styles.emptyList}>
+                            {posts ? posts.length !== 0 ? posts.map(post => (<Post key={uuidv4()} user={user} post={createPost(post, access_token.current)} changePage={changePage} searchHashtag={setSearchHashtag} />)) : <div className={styles.emptyList}>
                                 <FaUser className={styles.emptyListIcon} />
                                 <span>Seu perfil ainda não tem postagens. Comece a compartilhar conteúdo para que suas postagens apareçam aqui!</span>
                             </div> : <div className={styles.loadingCircle}></div>}
@@ -501,7 +512,7 @@ export default function MainPage() {
                     pageContent = (
                         <>
                             <SectionHeader key={uuidv4()} title={"Postagens Curtidas"} Icon={FaHeart} />
-                            {likedPosts ? likedPosts.length !== 0 ? likedPosts.map(post => (<Post key={uuidv4()} user={user} post={createPost(post, access_token.current)} />)) : <div className={styles.emptyList}>
+                            {likedPosts ? likedPosts.length !== 0 ? likedPosts.map(post => (<Post key={uuidv4()} user={user} post={createPost(post, access_token.current)} changePage={changePage} searchHashtag={setSearchHashtag} />)) : <div className={styles.emptyList}>
                                 <FaHeart className={styles.emptyListIcon} />
                                 <span>Você ainda não curtiu nenhuma postagem. Quando você começar a curtir, elas aparecerão aqui!</span>
                             </div> : <div className={styles.loadingCircle}></div>}
@@ -513,7 +524,7 @@ export default function MainPage() {
                     pageContent = (
                         <>
                             <SectionHeader key={uuidv4()} title={"Postagens Salvas"} Icon={FaBookmark} />
-                            {savedPosts ? savedPosts.length !== 0 ? savedPosts.map(post => (<Post key={uuidv4()} user={user} post={createPost(post, access_token.current)} />)) : <div className={styles.emptyList}>
+                            {savedPosts ? savedPosts.length !== 0 ? savedPosts.map(post => (<Post key={uuidv4()} user={user} post={createPost(post, access_token.current)} changePage={changePage} searchHashtag={setSearchHashtag} />)) : <div className={styles.emptyList}>
                                 <FaBookmark className={styles.emptyListIcon} />
                                 <span>Você ainda não salvou nenhuma postagem. Quando você salvar algo, suas postagens favoritas aparecerão aqui!</span>
                             </div> : <div className={styles.loadingCircle}></div>}
@@ -527,7 +538,7 @@ export default function MainPage() {
 
                             <ProfileHeader key={uuidv4()} user={externalProfile} changePage={changePage} targetUsername={targetUserUsername} targetID={targetUserID} activeUserID={user.id} following={followingCount} setFollowing={setFollowingCount} />
 
-                            {externalPosts ? externalPosts.length !== 0 ? externalPosts.map(post => (<Post key={uuidv4()} post={createPost(post, access_token.current)} />)) : <div className={styles.emptyList}>
+                            {externalPosts ? externalPosts.length !== 0 ? externalPosts.map(post => (<Post key={uuidv4()} post={createPost(post, access_token.current)} user={user} changePage={changePage} searchHashtag={setSearchHashtag} />)) : <div className={styles.emptyList}>
                                 <FaUser className={styles.emptyListIcon} />
                                 <span>O perfil ainda não tem postagens. Quando ele compartilhar conteúdo, suas postagens apareçam aqui!</span>
                             </div> : <div className={styles.loadingCircle}></div>}
@@ -539,7 +550,7 @@ export default function MainPage() {
                     pagePath = '/post/' + externalPost[0].PostUser.username + "/" + externalPost[0].id;
                     pageContent = (
                         <>
-                            {externalPost ? externalPost.map(post => (<Post key={uuidv4()} post={createPost(post, access_token.current)} />)) : <div className={styles.loadingCircle}></div>}
+                            {externalPost ? externalPost.map(post => (<Post key={uuidv4()} post={createPost(post, access_token.current)} user={user} changePage={changePage} searchHashtag={setSearchHashtag} />)) : <div className={styles.loadingCircle}></div>}
                         </>
                     );
                     navigate("/home", { replace: true });
@@ -551,7 +562,7 @@ export default function MainPage() {
 
                             <ProfileHeader key={uuidv4()} user={externalProfile} changePage={changePage} targetUsername={targetUserUsername} targetID={targetUserID} activeUserID={user.id} following={followingCount} setFollowing={setFollowingCount} />
 
-                            {following ? following.length !== 0 ? following.map(follower => (<FollowLine key={uuidv4()} follower={createFollow(follower, access_token.current)} activeUserID={user.id} following={followingCount} setFollowing={setFollowingCount} />)) : <div className={styles.emptyList}>
+                            {following ? following.length !== 0 ? <><SectionHeader key={uuidv4()} title={"Lista de Seguidos"} Icon={MdFollowTheSigns} small={true} />{following.map(follower => (<FollowLine key={uuidv4()} follower={createFollow(follower, access_token.current)} activeUserID={user.id} following={followingCount} setFollowing={setFollowingCount} />))}</> : <div className={styles.emptyList}>
                                 <MdFollowTheSigns className={styles.emptyListIcon} />
                                 <span>O perfil ainda não segue ninguém. Quando ele seguir alguém, eles aparecerão aqui!</span>
                             </div> : <div className={styles.loadingCircle}></div>}
@@ -564,16 +575,37 @@ export default function MainPage() {
                     pagePath = '/home'
                     pageContent = (
                         <>
+
                             <ProfileHeader key={uuidv4()} user={externalProfile} changePage={changePage} targetUsername={targetUserUsername} targetID={targetUserID} activeUserID={user.id} following={followingCount} setFollowing={setFollowingCount} />
 
-                            {followers ? followers.length !== 0 ? followers.map(follower => (<FollowLine key={uuidv4()} follower={createFollow(follower, access_token.current)} activeUserID={user.id} following={followingCount} setFollowing={setFollowingCount} />)) : <div className={styles.emptyList}>
+                            {followers ? followers.length !== 0 ? <> <SectionHeader key={uuidv4()} title={"Lista de Seguidores"} Icon={MdFollowTheSigns} small={true} />{followers.map(follower => (<FollowLine key={uuidv4()} follower={createFollow(follower, access_token.current)} activeUserID={user.id} following={followingCount} setFollowing={setFollowingCount} />))}</> : <div className={styles.emptyList}>
                                 <MdFollowTheSigns className={styles.emptyListIcon} />
                                 <span>O perfil ainda não é seguido por ninguém. Quando ele tiver seguidores, eles aparecerão aqui!</span>
                             </div> : <div className={styles.loadingCircle}></div>}
                         </>
                     );
+                    break;
+                case 'result':
+                    pagePath = '/home'
+                    pageContent = (
+                        <>
 
-                    setFollowers(null);
+                            <SectionHeader key={uuidv4()} title={"Resultado"} Icon={FaSearch} />
+                            <h1>Pesquisando por {searchTerm}</h1>
+
+                        </>
+                    );
+                    break;
+                case 'hashtag':
+                    pagePath = '/home'
+                    pageContent = (
+                        <>
+
+                            <SectionHeader key={uuidv4()} title={"Hashtag"} Icon={FaHashtag} />
+                            <h1>Pesquisando por {searchHashtag}</h1>
+
+                        </>
+                    );
                     break;
                 case 'editProfile':
                     pagePath = '/home';
@@ -777,9 +809,9 @@ export default function MainPage() {
 
                     </div>
                     <div className={styles.rightSide}>
-                        <SearchBox />
+                        <SearchBox changePage={changePage} searchTerm={setSearchTerm} searchHashtag={setSearchHashtag} />
                         <div className={styles.suggestionBox}>
-                            {usersSuggestion ? usersSuggestion.map(suggestion => (<FollowLine key={suggestion.username} follower={createFollow(suggestion, access_token.current)} activeUserID={user.id} following={followingCount} setFollowing={setFollowingCount} small="true" />)) : <LoadingCircle />}
+                            {usersSuggestion ? <><span className={styles.suggestionTitle}>Quem seguir</span>{usersSuggestion.map(suggestion => (<FollowLine key={suggestion.username} follower={createFollow(suggestion, access_token.current)} activeUserID={user.id} following={followingCount} setFollowing={setFollowingCount} small="true" />))}</> : <LoadingCircle />}
                         </div>
                     </div>
 
@@ -791,8 +823,5 @@ export default function MainPage() {
             <LoadingCircle />
         </div >
     </>
-
-
-
     )
 }

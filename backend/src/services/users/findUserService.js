@@ -62,10 +62,6 @@ async function findUserbyUsername(username, id = null) {
 
 
     } catch (error) {
-        console.log("-------------------------------------------------------");
-        console.log(error);
-
-        console.log("-------------------------------------------------------");
 
         return -1;
     }
@@ -94,6 +90,14 @@ async function findUserbyID(id) {
                             WHERE f."followedID" = users.id
                         )`),
                                 'followerCount'
+                            ],
+                            [
+                                Sequelize.literal(`(
+                            SELECT COUNT(*)
+                            FROM posts AS p
+                            WHERE p."userID" = users.id
+                        )`),
+                                'postCount'
                             ]
                         ]
                 }

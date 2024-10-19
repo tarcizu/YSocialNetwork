@@ -1,18 +1,32 @@
 import React, { useState } from 'react';
 import styles from './SearchBox.module.css';
 import { FaSearch } from 'react-icons/fa'
+import { isHashtag } from '../controller/contentFormatterController';
 
 
 
-const SearchBox = ({ }) => {
+const SearchBox = ({ changePage, searchTerm, searchHashtag }) => {
 
     const [searchContent, setSearchContent] = useState("");
 
 
     const handleSubmitSearch = async (e) => {
         e.preventDefault();
-        console.log("Apertou Buscar: " + searchContent);
+
+        const term = searchContent.trim();
+        if (term !== "") {
+            if (isHashtag(term)) {
+                searchHashtag(term);
+                changePage('hashtag');
+            } else {
+                searchTerm(term)
+                changePage('result');
+
+            }
+
+        }
         setSearchContent('');
+
 
     }
 

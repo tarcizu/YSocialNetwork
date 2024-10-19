@@ -27,7 +27,7 @@ export function formattedSignUpDate(dbTimestamp) {
 
     const dateOptions = {
         day: '2-digit',
-        month: 'long',
+        month: '2-digit',
         year: 'numeric'
     }
     const date = formattedTimestamp.toLocaleString('pt-BR', dateOptions).replace('.', '');

@@ -3,15 +3,15 @@ import styles from './SectionHeader.module.css';
 
 
 
-const SectionHeader = ({ title, Icon }) => {
+const SectionHeader = ({ title, Icon, small = false }) => {
     return (
         <>
-            <div className={styles.sectionHeader}>
+            <div className={small ? styles.smallSectionHeader : styles.bigSectionHeader}>
                 <div className={styles.leftSection}>
-                    <Icon className={styles.icon} />
+                    <Icon className={small ? styles.smallIcon : styles.bigIcon} />
                 </div>
                 <div className={styles.rightSection}>
-                    <h1 className={styles.title}>{title}</h1>
+                    <h1 className={small ? styles.smallTitle : styles.bigTitle}>{title}</h1>
 
                 </div>
 

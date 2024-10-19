@@ -10,6 +10,7 @@ const { removeRepost } = require('../services/posts/removeRepostService');
 const { addSave } = require('../services/posts/addSaveService');
 const { removeSave } = require('../services/posts/removeSaveService');
 const { findPost } = require('../services/posts/findPostService');
+const { removePost } = require('../services/posts/removePostService');
 
 
 
@@ -282,6 +283,29 @@ async function getPost(request, response) {
     }
 
 };
+async function deletePost(request, response) {
+    const id = request.body.id;
+    const postId = request.params.postID;
+    console.log("\n----------------ROUTE STARTED----------------");
+    console.log(`Rota remoção de Postagem:\nId do Usuário: ${id ? id : "[NÃO ENVIADO]"}\nId da Postagem: ${postId ? postId : "[NÃO ENVIADO]"}`);
+    const result = await removePost(id, postId);
+    if (result === -1) {
+        console.log(`\nFalha ao remover postagem: Error desconhecido`);
+        console.log("-----------------ROUTE ENDED-----------------");
+        response.sendStatus(400);
+    }
+    else if (result === -2) {
+        console.log(`\nFalha ao remover postagem: Nenhuma postagem encontrada`);
+        console.log("-----------------ROUTE ENDED-----------------");
+        response.sendStatus(404);
+    }
+    else {
+        console.log(`\nPostagem removida com sucesso!`);
+        console.log("-----------------ROUTE ENDED-----------------");
+        response.sendStatus(200);
+    }
+
+};
 
 
 
@@ -298,5 +322,6 @@ module.exports = {
     removeRepostPost,
     addSavePost,
     removeSavePost,
-    getPost
+    getPost,
+    deletePost
 }

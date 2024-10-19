@@ -1,4 +1,17 @@
-.sectionHeader {
+.bigSectionHeader {
+
+    width: calc(100% - 40px);
+    margin: 10px 20px;
+    min-height: calc(20vh - 8px);
+    max-height: 30vh;
+    margin-bottom: 5px;
+    display: flex;
+    flex-direction: row;
+    border-bottom: 2px solid var(--ContentColor);
+    justify-content: center;
+}
+
+.smallSectionHeader {
 
     width: calc(100% - 40px);
     margin: 10px 20px;
@@ -6,31 +19,52 @@
     margin-bottom: 5px;
     display: flex;
     flex-direction: row;
-
+    border-bottom: 2px solid var(--ContentColor);
+    justify-content: center;
 }
 
 .leftSection {
     display: flex;
-    width: 20%;
+    /* width: 20%; */
     justify-content: center;
+
 }
 
-.icon {
+.bigIcon {
     font-size: 80px;
     color: var(--ContentColor);
     margin: 5px;
+    align-self: center;
+    margin-right: 20px;
+}
+
+.smallIcon {
+    font-size: 40px;
+    color: var(--ContentColor);
+    margin: 5px;
+    align-self: flex-end;
 }
 
 .rightSection {
     display: flex;
     flex-direction: column;
-    width: 80%;
+    /* width: 80%; */
     justify-content: center;
 
 }
 
-.title {
+.bigTitle {
 
     font-size: 60px;
     color: var(--ContentColor);
+}
+
+.smallTitle {
+
+    font-size: 30px;
+    color: var(--ContentColor);
+    align-self: center;
+    margin-left: 20px;
+
+
 }

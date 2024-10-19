@@ -1,6 +1,7 @@
 import { addLike } from "../services/post/addLikeService";
 import { addRepost } from "../services/post/addRepostService";
 import { addSave } from "../services/post/addSaveService";
+import { deletePost } from "../services/post/deletePostService";
 import { removeLike } from "../services/post/removeLikeService";
 import { removeRepost } from "../services/post/removeRepostService";
 import { removeSave } from "../services/post/removeSaveService";
@@ -175,6 +176,17 @@ function createPost(data, access_token) {
         }
         else {
             console.log("Salvamento já não existia");
+            return false;
+        }
+    };
+    post.delete = async function () {
+        const result = await deletePost(access_token, this.id);
+        if (result === -2) {
+            console.log("Postagem deletada com sucesso");
+            return true;
+        }
+        else {
+            console.log("Postagem já havia sido deletada");
             return false;
         }
     };

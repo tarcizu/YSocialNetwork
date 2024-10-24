@@ -7,7 +7,7 @@ const login = require('./routes/login');
 const auth = require('./routes/auth');
 const posts = require('./routes/posts');
 const user = require('./routes/user');
-const isLogged = require('../middleware/isLogged');
+const search = require('./routes/search');
 
 const routes = Router();
 
@@ -20,6 +20,7 @@ routes.use('/login', login);
 routes.use('/auth', auth);
 routes.use('/posts', posts);
 routes.use('/user', user);
+routes.use('/search', search);
 
 
 module.exports = routes;

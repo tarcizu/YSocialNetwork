@@ -105,7 +105,6 @@
     gap: 20px;
 
 
-
 }
 
 .emptyList {
@@ -333,4 +332,15 @@
 
 .trashIcon {
     font-size: 20px;
+}
+
+.profileCardPainel {
+    width: 100%;
+    height: auto;
+    padding: 10px 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    gap: 10px;
+    border-bottom: 2px solid var(--ContentColor);
 }

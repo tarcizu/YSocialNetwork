@@ -3,7 +3,7 @@ import styles from './FollowLine.module.css';
 import AvatarPhoto from './AvatarPhoto';
 import { useNavigate } from 'react-router-dom';
 import VerifyBadge from './VerifyBadge';
-import { SlUserFollow, SlUserFollowing } from "react-icons/sl";
+
 
 
 

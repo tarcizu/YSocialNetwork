@@ -34,6 +34,9 @@ import SearchBox from "../components/SearchBox";
 import { getUsersSuggestion } from "../services/profile/getUsersSuggestionService";
 import { updatePassword, updateProfile } from "../services/user/updateUserService";
 import { UploadPhoto } from "../services/external/UploadPhotoService";
+import { findHashtag } from "../services/post/findHashtagService";
+import { findTerm } from "../services/post/findTermService";
+import ProfileCard from "../components/ProfileCard";
 
 
 
@@ -56,6 +59,8 @@ export default function MainPage() {
     const [following, setFollowing] = useState(null);
     const [searchTerm, setSearchTerm] = useState(null);
     const [searchHashtag, setSearchHashtag] = useState(null);
+    const [hashtagPosts, setHashtagPosts] = useState(null);
+    const [searchResult, setSearchResult] = useState(null);
     const [followingCount, setFollowingCount] = useState(0);
     const [usersSuggestion, setUsersSuggestion] = useState(null);
 
@@ -448,9 +453,24 @@ export default function MainPage() {
                         break;
                     case 'result':
 
+                        result = await findTerm(searchTerm, access_token.current);
+                        if (result === -1) {
+                            console.log("Falha ao buscar termo: Erro Desconhecido");
+                        }
+                        else {
+                            setSearchResult(result);
+                        }
+                        console.log(searchResult);
+
                         break;
                     case 'hashtag':
-
+                        result = await findHashtag(searchHashtag, access_token.current);
+                        if (result === -1) {
+                            console.log("Falha ao buscar Hashtag: Erro Desconhecido");
+                        }
+                        else {
+                            setHashtagPosts(result);
+                        }
                         break;
                     case 'editPassword':
                         break;
@@ -490,7 +510,7 @@ export default function MainPage() {
                                 timeline ? timeline.length !== 0 ? timeline.map(post => (<Post key={uuidv4()} user={user} post={createPost(post, access_token.current)} changePage={changePage} searchHashtag={setSearchHashtag} />)) : <div className={styles.emptyList}>
                                     <FaHome className={styles.emptyListIcon} />
                                     <span>Sua timeline está vazia. Comece a seguir pessoas e interagir para ver atualizações e postagens aqui!</span>
-                                </div> : < div className={styles.loadingCircle} ></div >}
+                                </div> : <LoadingCircle />}
 
                         </>
                     );
@@ -503,7 +523,7 @@ export default function MainPage() {
                             {posts ? posts.length !== 0 ? posts.map(post => (<Post key={uuidv4()} user={user} post={createPost(post, access_token.current)} changePage={changePage} searchHashtag={setSearchHashtag} />)) : <div className={styles.emptyList}>
                                 <FaUser className={styles.emptyListIcon} />
                                 <span>Seu perfil ainda não tem postagens. Comece a compartilhar conteúdo para que suas postagens apareçam aqui!</span>
-                            </div> : <div className={styles.loadingCircle}></div>}
+                            </div> : <LoadingCircle />}
                         </>
                     );
                     break;
@@ -515,7 +535,7 @@ export default function MainPage() {
                             {likedPosts ? likedPosts.length !== 0 ? likedPosts.map(post => (<Post key={uuidv4()} user={user} post={createPost(post, access_token.current)} changePage={changePage} searchHashtag={setSearchHashtag} />)) : <div className={styles.emptyList}>
                                 <FaHeart className={styles.emptyListIcon} />
                                 <span>Você ainda não curtiu nenhuma postagem. Quando você começar a curtir, elas aparecerão aqui!</span>
-                            </div> : <div className={styles.loadingCircle}></div>}
+                            </div> : <LoadingCircle />}
                         </>
                     );
                     break;
@@ -527,7 +547,7 @@ export default function MainPage() {
                             {savedPosts ? savedPosts.length !== 0 ? savedPosts.map(post => (<Post key={uuidv4()} user={user} post={createPost(post, access_token.current)} changePage={changePage} searchHashtag={setSearchHashtag} />)) : <div className={styles.emptyList}>
                                 <FaBookmark className={styles.emptyListIcon} />
                                 <span>Você ainda não salvou nenhuma postagem. Quando você salvar algo, suas postagens favoritas aparecerão aqui!</span>
-                            </div> : <div className={styles.loadingCircle}></div>}
+                            </div> : <LoadingCircle />}
                         </>
                     );
                     break;
@@ -541,7 +561,7 @@ export default function MainPage() {
                             {externalPosts ? externalPosts.length !== 0 ? externalPosts.map(post => (<Post key={uuidv4()} post={createPost(post, access_token.current)} user={user} changePage={changePage} searchHashtag={setSearchHashtag} />)) : <div className={styles.emptyList}>
                                 <FaUser className={styles.emptyListIcon} />
                                 <span>O perfil ainda não tem postagens. Quando ele compartilhar conteúdo, suas postagens apareçam aqui!</span>
-                            </div> : <div className={styles.loadingCircle}></div>}
+                            </div> : <LoadingCircle />}
                         </>
                     );
                     navigate("/home", { replace: true });
@@ -550,7 +570,7 @@ export default function MainPage() {
                     pagePath = '/post/' + externalPost[0].PostUser.username + "/" + externalPost[0].id;
                     pageContent = (
                         <>
-                            {externalPost ? externalPost.map(post => (<Post key={uuidv4()} post={createPost(post, access_token.current)} user={user} changePage={changePage} searchHashtag={setSearchHashtag} />)) : <div className={styles.loadingCircle}></div>}
+                            {externalPost ? externalPost.map(post => (<Post key={uuidv4()} post={createPost(post, access_token.current)} user={user} changePage={changePage} searchHashtag={setSearchHashtag} />)) : <LoadingCircle />}
                         </>
                     );
                     navigate("/home", { replace: true });
@@ -565,7 +585,7 @@ export default function MainPage() {
                             {following ? following.length !== 0 ? <><SectionHeader key={uuidv4()} title={"Lista de Seguidos"} Icon={MdFollowTheSigns} small={true} />{following.map(follower => (<FollowLine key={uuidv4()} follower={createFollow(follower, access_token.current)} activeUserID={user.id} following={followingCount} setFollowing={setFollowingCount} />))}</> : <div className={styles.emptyList}>
                                 <MdFollowTheSigns className={styles.emptyListIcon} />
                                 <span>O perfil ainda não segue ninguém. Quando ele seguir alguém, eles aparecerão aqui!</span>
-                            </div> : <div className={styles.loadingCircle}></div>}
+                            </div> : <LoadingCircle />}
                         </>
                     );
 
@@ -581,31 +601,53 @@ export default function MainPage() {
                             {followers ? followers.length !== 0 ? <> <SectionHeader key={uuidv4()} title={"Lista de Seguidores"} Icon={MdFollowTheSigns} small={true} />{followers.map(follower => (<FollowLine key={uuidv4()} follower={createFollow(follower, access_token.current)} activeUserID={user.id} following={followingCount} setFollowing={setFollowingCount} />))}</> : <div className={styles.emptyList}>
                                 <MdFollowTheSigns className={styles.emptyListIcon} />
                                 <span>O perfil ainda não é seguido por ninguém. Quando ele tiver seguidores, eles aparecerão aqui!</span>
-                            </div> : <div className={styles.loadingCircle}></div>}
+                            </div> : <LoadingCircle />}
                         </>
                     );
                     break;
                 case 'result':
+                    console.log(searchResult);
+
                     pagePath = '/home'
                     pageContent = (
                         <>
 
                             <SectionHeader key={uuidv4()} title={"Resultado"} Icon={FaSearch} />
-                            <h1>Pesquisando por {searchTerm}</h1>
+                            <SectionHeader key={uuidv4()} title={searchTerm} Icon={FaSearch} small={true} />
 
+                            {searchResult.profiles && searchResult.profiles.length !== 0 ? <div className={styles.profileCardPainel}> {searchResult.profiles.map(profile => (<ProfileCard profile={createUser(profile, access_token.current)} activeUserID={user.id} setFollowing={setFollowingCount} following={followingCount} />))}</div > : <></>
+                            }
+
+                            {searchResult.posts && searchResult.posts.length !== 0 ? searchResult.posts.map(post => (<Post key={uuidv4()} post={createPost(post, access_token.current)} user={user} changePage={changePage} searchHashtag={setSearchHashtag} />)) : <></>}
+
+
+                            {
+                                !searchResult.posts && !searchResult.profiles ? <div className={styles.emptyList}>
+                                    <FaSearch className={styles.emptyListIcon} />
+                                    <span>Nenhum resultado encontrado! Será que vc não esta sendo especifico de mais?</span>
+                                </div> : <></>
+                            }
                         </>
+
                     );
+                    console.log(searchResult);
                     break;
                 case 'hashtag':
                     pagePath = '/home'
+
                     pageContent = (
                         <>
-
-                            <SectionHeader key={uuidv4()} title={"Hashtag"} Icon={FaHashtag} />
-                            <h1>Pesquisando por {searchHashtag}</h1>
+                            <SectionHeader key={uuidv4()} title={'Hashtag'} Icon={FaHashtag} />
+                            <SectionHeader key={uuidv4()} title={searchHashtag.replace("#", "")} Icon={FaHashtag} small={true} />
+                            {hashtagPosts ? hashtagPosts.length !== 0 ? hashtagPosts.map(post => (<Post key={uuidv4()} post={createPost(post, access_token.current)} user={user} changePage={changePage} searchHashtag={setSearchHashtag} />)) : <div className={styles.emptyList}>
+                                <FaHashtag className={styles.emptyListIcon} />
+                                <span>Ainda não existe nenhuma menção a essa Hashtag! Seja o Primeiro!</span>
+                            </div> : <LoadingCircle />}
 
                         </>
                     );
+                    setHashtagPosts(null);
+                    setSearchHashtag(null);
                     break;
                 case 'editProfile':
                     pagePath = '/home';
@@ -614,9 +656,6 @@ export default function MainPage() {
                             <SectionHeader key={uuidv4()} title={"Editar Perfil"} Icon={FaUserEdit} />
 
                             <form onSubmit={handleUpdateProfile} className={styles.updateContainer}>
-
-
-
 
                                 <div className={styles.updatePhotoContainer}>
                                     <label htmlFor="editPhoto">Foto</label>
@@ -647,9 +686,6 @@ export default function MainPage() {
                                 </div>
                                 <button className={styles.editButton} type="submit">Editar</button>
                             </form >
-
-
-
 
                         </>
                     );

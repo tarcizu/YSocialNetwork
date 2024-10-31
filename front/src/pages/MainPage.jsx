@@ -37,6 +37,9 @@ import { UploadPhoto } from "../services/external/UploadPhotoService";
 import { findHashtag } from "../services/post/findHashtagService";
 import { findTerm } from "../services/post/findTermService";
 import ProfileCard from "../components/ProfileCard";
+import { getTrending } from "../services/post/getTrendingService";
+import TrendingLine from "../components/TrendingLine";
+import ScrollBackButton from "../components/ScrollBackButton";
 
 
 
@@ -62,7 +65,8 @@ export default function MainPage() {
     const [hashtagPosts, setHashtagPosts] = useState(null);
     const [searchResult, setSearchResult] = useState(null);
     const [followingCount, setFollowingCount] = useState(0);
-    const [usersSuggestion, setUsersSuggestion] = useState(null);
+    const [usersSuggestion, setUsersSuggestion] = useState([]);
+    const [trending, setTrending] = useState([]);
 
 
 
@@ -278,13 +282,16 @@ export default function MainPage() {
 
                 console.log("Usuário Autenticado");
             }
+
             const suggestion = await getUsersSuggestion(access_token.current);
-            if (suggestion === -1) {
-
-            } else {
-
+            if (suggestion !== -1) {
                 setUsersSuggestion(suggestion);
             }
+            const trending = await getTrending(access_token.current);
+            if (trending !== -1) {
+                setTrending(trending);
+            }
+
             pageMounted.current = true;
 
             if (receivedUsername) {
@@ -783,7 +790,7 @@ export default function MainPage() {
                     <div className={styles.leftSide}>
                         <div className={styles.UserHeader}>
                             <div className={styles.TopHeader}>
-                                <AvatarPhoto>{user.avatar}</AvatarPhoto>
+                                <AvatarPhoto key={user.id} profileName={user.fullname}>{user.avatar}</AvatarPhoto>
                                 <div className={styles.UserNames}>
                                     <div className={styles.nameBadge}>
 
@@ -842,15 +849,16 @@ export default function MainPage() {
                     <div className={styles.middleSide}>
                         {pageContent}
 
-
                     </div>
                     <div className={styles.rightSide}>
                         <SearchBox changePage={changePage} searchTerm={setSearchTerm} searchHashtag={setSearchHashtag} />
-                        <div className={styles.suggestionBox}>
-                            {usersSuggestion ? <><span className={styles.suggestionTitle}>Quem seguir</span>{usersSuggestion.map(suggestion => (<FollowLine key={suggestion.username} follower={createFollow(suggestion, access_token.current)} activeUserID={user.id} following={followingCount} setFollowing={setFollowingCount} small="true" />))}</> : <LoadingCircle />}
-                        </div>
-                    </div>
+                        {usersSuggestion.length > 0 ? <div className={styles.suggestionBox}><><span className={styles.suggestionTitle}>Quem seguir</span>{usersSuggestion.map(suggestion => (<FollowLine key={suggestion.username} follower={createFollow(suggestion, access_token.current)} activeUserID={user.id} following={followingCount} setFollowing={setFollowingCount} small="true" />))}</></div> : <></>}
 
+
+                        {trending.length > 0 ? <> <div className={styles.trendingBox}><span className={styles.trendingTitle}>Tendências</span>{trending.map((hashtag, index) => (<TrendingLine key={hashtag.id} index={index + 1} trending={hashtag} changePage={changePage} searchHashtag={setSearchHashtag} editable={true} />))}</div></> : <></>}
+
+                    </div>
+                    <ScrollBackButton />
                 </div>
             </div>
         </div>

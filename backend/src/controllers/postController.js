@@ -11,6 +11,8 @@ const { addSave } = require('../services/posts/addSaveService');
 const { removeSave } = require('../services/posts/removeSaveService');
 const { findPost } = require('../services/posts/findPostService');
 const { removePost } = require('../services/posts/removePostService');
+const { processHashtags } = require('../services/posts/processHashtagsService');
+const { findTrending } = require('../services/posts/findTrendingService');
 
 
 
@@ -44,10 +46,22 @@ async function createPost(request, response) {
     const content = request.body.content;
     const image = request.body.image || null;
     const source = request.body.source;
+    const hashtags = [...new Set(content.match(/#[\wÀ-ÖØ-öø-ÿ]+/g))];
     console.log("\n----------------ROUTE STARTED----------------");
     console.log(`Rota de Criação de Postagem Acessada:\nId: ${id ? id : "[NÃO ENVIADO]"}\nConteúdo: ${content ? content : "[NÃO ENVIADO]"}\nImagem: ${image ? image : "[NÃO ENVIADO]"}\nID da fonte: ${source ? source : "[NÃO ENVIADO]"}\n`);
+
+
+    if (hashtags) {
+        const hashtagResult = await processHashtags(hashtags);
+        if (hashtagResult === -1) {
+            console.log(`\nFalha ao processar Hashtags: Error desconhecido`);
+        } else {
+            console.log(`${hashtagResult[0] + hashtagResult[1]} Hashtags computadas com sucesso: ${hashtagResult[1]} Novas e ${hashtagResult[0]} existentes`);
+        }
+    }
     const result = await createNewPost(id, content, image, source);
     if (result === -1) {
+        console.log(`\nFalha ao criar Postagem: Error desconhecido`);
         console.log("-----------------ROUTE ENDED-----------------");
         response.sendStatus(400);
     }
@@ -306,7 +320,25 @@ async function deletePost(request, response) {
     }
 
 };
+async function getTrending(request, response) {
+    console.log("\n----------------ROUTE STARTED----------------");
+    console.log(`Rota de Tendências:`);
+    const result = await findTrending();
 
+
+
+    if (result === -1) {
+        console.log(`\nFalha ao obter Tendências: Error desconhecido`);
+        console.log("-----------------ROUTE ENDED-----------------");
+        response.sendStatus(400);
+    }
+    else {
+        console.log(`\nTendências obtidas com sucesso: ${result.length} tendências encontradas`);
+        console.log("-----------------ROUTE ENDED-----------------");
+        response.status(200).json(result)
+    }
+
+};
 
 
 module.exports = {
@@ -323,5 +355,6 @@ module.exports = {
     addSavePost,
     removeSavePost,
     getPost,
-    deletePost
+    deletePost,
+    getTrending
 }

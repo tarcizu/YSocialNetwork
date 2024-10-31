@@ -15,6 +15,7 @@ import ProfileHeader from "../components/ProfileHeader";
 import { getProfile } from "../services/profile/getProfileService";
 import { getProfileTimeline } from "../services/profile/getProfileTimelineService";
 import SectionHeader from "../components/SectionHeader";
+import ScrollBackButton from "../components/ScrollBackButton";
 
 
 
@@ -203,7 +204,7 @@ export default function ProfilePage() {
                     <div className={styles.rightSide}>
 
                     </div>
-
+                    <ScrollBackButton />
                 </div>
             </div>
         </div >

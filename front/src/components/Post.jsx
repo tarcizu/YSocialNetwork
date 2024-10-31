@@ -111,21 +111,33 @@ const Post = ({ post, user = "", editable = true, changePage, searchHashtag }) =
         if (result) {
             setVisible(false);
         }
-
-
     }
 
     const handleSearchHashtag = async (e) => {
         e.stopPropagation();
         e.preventDefault();
-        searchHashtag(e.target.innerText);
-        changePage('hashtag');
-        console.log(`Clicou na Hashtag ${e.target.innerText}`);
+
+        if (!window.getSelection().toString()) {
+
+            console.log(`Clicou na Hashtag ${e.target.innerText}`);
+            searchHashtag(e.target.innerText);
+            changePage('hashtag');
+        }
+
 
     }
 
     const handleProfileLink = async (e) => {
         e.stopPropagation();
+    }
+    const handlePostLink = async (e) => {
+        e.preventDefault();
+
+        if (!window.getSelection().toString()) {
+
+            navigate(`/post/${post.author.username}/${post.id}`);
+        }
+
     }
 
     const showMenu = async () => {
@@ -170,7 +182,7 @@ const Post = ({ post, user = "", editable = true, changePage, searchHashtag }) =
 
 
                 </div>
-                <div className={styles.content} onClick={() => navigate(`/post/${post.author.username}/${post.id}`)}>
+                <div className={styles.content} onClick={handlePostLink}>
                     <p dangerouslySetInnerHTML={{ __html: contentPostFormatter(post.content) }}></p>
                 </div>
                 {post.image ? <img className={styles.image} src={post.image} alt="" /> : <></>}

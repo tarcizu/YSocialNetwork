@@ -1,0 +1,16 @@
+.scrollBackContainer {
+
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+}
+
+
+.scrollBackButton {
+    background-color: transparent;
+    font-size: 30px;
+    border: none;
+    color: var(--ContentColor);
+    border-radius: 50px;
+    cursor: pointer;
+}

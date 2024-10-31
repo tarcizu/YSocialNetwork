@@ -26,6 +26,7 @@
 
 
 
+
 }
 
 .leftSide {
@@ -58,7 +59,6 @@
 
 .middleSide {
     width: 50%;
-    border: 2px solid var(--ContentColor);
     background-color: var(--ThemeColor);
     height: max-content;
     min-height: 100vh;
@@ -70,6 +70,8 @@
     width: 25%;
     border: 2px solid var(--ContentColor);
     background-color: var(--ThemeColor);
+    border-top: none;
+    border-bottom: none;
 
 
 }
@@ -77,17 +79,21 @@
 .UserHeader {
     background-color: var(--ThemeColor);
     width: 100%;
-    height: 20vh;
+    height: 23vh;
+    min-height: 185px;
     padding: 10px;
     display: flex;
     flex-direction: column;
     border: 2px solid var(--ContentColor);
+    border-top: none;
 }
 
 .menuLeftContainer {
     flex: 1;
     background-color: var(--ThemeColor);
     border: 2px solid var(--ContentColor);
+    border-top: none;
+    border-bottom: none;
     width: 100%;
     min-height: 80vh;
     display: flex;
@@ -152,6 +158,16 @@
 
     display: flex;
     flex-direction: row;
+    align-items: center;
+}
+
+.TopHeader img {
+    width: 30%;
+    aspect-ratio: 1 /1;
+    margin: 5px;
+    border-radius: 50%;
+    object-fit: cover;
+    height: auto;
 }
 
 .BottomHeader {
@@ -166,13 +182,6 @@
 
 }
 
-.TopHeader img {
-    width: 30%;
-    aspect-ratio: 1 /1;
-    margin: 5px;
-    border-radius: 50%;
-    object-fit: cover;
-}
 
 .menuConfigs {
 
@@ -196,7 +205,8 @@
     text-decoration: underline;
 }
 
-.suggestionBox {
+.suggestionBox,
+.trendingBox {
 
     display: flex;
     flex-direction: column;
@@ -207,7 +217,8 @@
     position: relative;
 }
 
-.suggestionTitle {
+.suggestionTitle,
+.trendingTitle {
     position: absolute;
     top: -20px;
     line-height: 20px;

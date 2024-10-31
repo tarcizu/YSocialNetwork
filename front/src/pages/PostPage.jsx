@@ -12,6 +12,7 @@ import { auth } from "../services/auth/authService";
 import { changeTheme, setInitialTheme } from "../controller/themeController";
 import SectionHeader from "../components/SectionHeader";
 import { getPost } from "../services/post/getPostService";
+import ScrollBackButton from "../components/ScrollBackButton";
 
 
 
@@ -191,7 +192,7 @@ export default function PostPage() {
                     <div className={styles.rightSide}>
 
                     </div>
-
+                    <ScrollBackButton />
                 </div>
             </div>
         </div >

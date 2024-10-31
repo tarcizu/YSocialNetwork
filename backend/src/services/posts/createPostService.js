@@ -1,6 +1,5 @@
 const Post = require('../../data/models/Post');
-const User = require('../../data/models/User');
-const Source = require('../../data/models/Source');
+
 
 async function createNewPost(userId, content, image, sourceId) {
     try {

@@ -1,0 +1,36 @@
+.trendingLine {
+    display: flex;
+    flex-direction: row;
+    margin: 5px 10px;
+    color: var(--ContentColor);
+}
+
+.trendingIndex {
+    display: flex;
+
+    margin-left: 20px;
+    margin-right: 10px;
+    font-size: 28px;
+    align-self: center;
+    text-align: right;
+}
+
+.trendingData {
+
+    display: flex;
+    flex-direction: column;
+    align-self: center;
+    cursor: pointer;
+}
+
+.trendingData:hover {
+    text-decoration: underline;
+}
+
+.trendingName {
+    word-break: break-all;
+}
+
+.trendingCount {
+    font-size: 10px;
+}

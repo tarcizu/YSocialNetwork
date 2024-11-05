@@ -4,6 +4,7 @@ import styles from '../styles/LoginPage.module.css'
 import { login } from '../services/login/loginService'
 import { Link, useNavigate } from "react-router-dom";
 import { setInitialTheme } from "../controller/themeController";
+import { ReactComponent as Logo } from "../assets/images/Logo.svg"
 
 
 
@@ -65,6 +66,13 @@ export default function LoginPage() {
     return (
         <div className='theme'>
             <div className={styles.PageContainer}>
+
+                <div className={styles.leftSide}>
+                    <Logo className={styles.logo} />
+                    <span className={styles.title}>Social Network</span>
+                </div>
+
+
                 <form onSubmit={handleSubmitLogin} className={styles.cardLogin}>
                     <h1>Entrar</h1>
                     <div className={styles.formField} id="fieldLoginUser">
@@ -83,6 +91,9 @@ export default function LoginPage() {
                     <button type="submit">Entrar</button>
                     <p>Ainda não tem uma conta no Y? <Link className={styles.link} to="/signup">Cadastre-se</Link></p>
                 </form>
+
+
+
             </div>
         </div>
 

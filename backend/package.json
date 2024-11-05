@@ -9,7 +9,7 @@
     "migrate": "npx sequelize-cli db:migrate",
     "createdb": "npx sequelize-cli db:create",
     "seed": "npx sequelize-cli db:seed:all",
-    "setup": "npx sequelize-cli db:create && npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all"
+    "setup": "npx sequelize-cli db:create && npx sequelize-cli db:migrate"
   },
   "keywords": [],
   "author": "Tarcizo Brito",

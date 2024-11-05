@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import '../index.css'
-import styles from '../styles/ProfilePage.module.css'
+import styles from '../styles/PostAndProfilePages.module.css'
 import { useNavigate, useParams } from "react-router-dom";
 import { v4 as uuidv4 } from 'uuid';
 import cookies from 'js-cookie';
@@ -16,6 +16,7 @@ import { getProfile } from "../services/profile/getProfileService";
 import { getProfileTimeline } from "../services/profile/getProfileTimelineService";
 import SectionHeader from "../components/SectionHeader";
 import ScrollBackButton from "../components/ScrollBackButton";
+import { ReactComponent as Logo } from "../assets/images/Logo.svg"
 
 
 
@@ -173,8 +174,13 @@ export default function ProfilePage() {
             <div className={styles.PageContainer}>
                 <div className={styles.PageContent}>
                     <div className={styles.leftSide}>
-                        <div className={styles.UserHeader}>
 
+
+                        <div className={styles.UserHeader}>
+                            <div className={styles.brandContainer}>
+                                <Logo className={styles.logo} />
+                                <span className={styles.title}>Social Network</span>
+                            </div>
                             <button onClick={() => navigate("/login", { replace: true })}>Login</button>
                             <button onClick={() => navigate("/signup", { replace: true })}>Cadastrar-se</button>
                         </div>

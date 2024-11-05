@@ -5,6 +5,26 @@
     box-sizing: border-box;
 }
 
+.brandContainer {
+
+    color: var(--ContentColor);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.logo {
+    width: 150px;
+    height: 150px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+.title {
+    font-weight: bold;
+    font-size: 30px;
+    margin-bottom: 20px;
+}
 
 .PageContainer {
     width: 100vw;
@@ -59,7 +79,7 @@
 .UserHeader {
     background-color: var(--ThemeColor);
     width: 100%;
-    height: 20vh;
+    height: 40vh;
     padding: 10px;
     display: flex;
     flex-direction: column;
@@ -83,7 +103,7 @@
     background-color: var(--ThemeColor);
     border: 2px solid var(--ContentColor);
     width: 100%;
-    min-height: 80vh;
+    min-height: 60vh;
     display: flex;
     justify-content: center;
 

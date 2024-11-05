@@ -15,6 +15,15 @@
 
 }
 
+.rightSide {
+    width: 50%;
+}
+
+.leftSide {
+    width: 50%;
+}
+
+
 .cardSignUp {
 
     width: 30vw;

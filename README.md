@@ -102,7 +102,7 @@ After these steps, the project will be ready for use and local testing.
 
 ## Screenshots
 
-<div style="display: flex; flex-wrap: wrap; justify-content: center;" >
+<div align="center" style="display: flex; flex-wrap: wrap; justify-content: center;" >
 <img src="./Screenshots/Screenshot1.png" width="45%" style="margin: 10px;" />
 <img src="./Screenshots/Screenshot2.png" width="45%" style="margin: 10px;" />
 <img src="./Screenshots/Screenshot3.png" width="45%" style="margin: 10px;" />

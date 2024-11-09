@@ -1,5 +1,5 @@
 <div align="center">
-<img src="https://i.ibb.co/jMsW38S/Logo-do-YSocial-Network-1.png" width="500" height="400" />
+<img src="./Screenshots/logo.png" width="500" height="400" />
 <div/>
 <div align="left"/>
 
@@ -97,6 +97,25 @@ Após esses passos, o projeto estará pronto para uso e testes locais.
 
 
 
+## Capturas de Tela
+
+<div style="display: flex; flex-wrap: wrap; justify-content: center;" >
+<img src="./Screenshots/Screenshot1.png" width="45%" style="margin: 10px;" />
+<img src="./Screenshots/Screenshot2.png" width="45%" style="margin: 10px;" />
+<img src="./Screenshots/Screenshot3.png" width="45%" style="margin: 10px;" />
+<img src="./Screenshots/Screenshot4.png" width="45%" style="margin: 10px;" />
+</div>
+
+
+## Implementações Futuras
+
+Aqui estão alguns recursos e melhorias planejados para o futuro do projeto:
+
+- **Aplicativo Mobile (Flutter)**: Será criado um aplicativo mobile desenvolvido com Flutter para proporcionar aos usuários acesso contínuo à plataforma em seus smartphones, permitindo a interação com postagens e notificações de maneira prática e em qualquer lugar.
+
+- **Skill para Alexa**: Será desenvolvida uma skill para Alexa que permitirá aos usuários acompanhar o número de seguidores, fazer novas postagens e interagir com a plataforma por meio de comandos de voz. Isso tornará a plataforma ainda mais acessível para usuários que preferem operar de maneira mãos-livres.
+
+Essas são apenas algumas ideias para futuras atualizações, e novos recursos podem ser adicionados conforme o projeto evolui.
 
 ## Licença
 

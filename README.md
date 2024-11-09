@@ -1,7 +1,7 @@
 <div align="center">
-<img src="https://i.ibb.co/jMsW38S/Logo-do-YSocial-Network-1.png" width="500" height="400" />
-<div/>
-<div align="left"/>
+<img src="./Screenshots/logo.png" width="500" height="400" />
+</div>
+
 
 
 
@@ -100,6 +100,27 @@ After these steps, the project will be ready for use and local testing.
 
 
 
+## Screenshots
+
+<div style="display: flex; flex-wrap: wrap; justify-content: center;" >
+<img src="./Screenshots/Screenshot1.png" width="45%" style="margin: 10px;" />
+<img src="./Screenshots/Screenshot2.png" width="45%" style="margin: 10px;" />
+<img src="./Screenshots/Screenshot3.png" width="45%" style="margin: 10px;" />
+<img src="./Screenshots/Screenshot4.png" width="45%" style="margin: 10px;" />
+</div>
+
+
+## Future Implementations
+
+Here are some features and improvements planned for the future of the project:
+
+- **Mobile App (Flutter)**: A mobile app developed with Flutter will be created to provide users with seamless access to the platform on their smartphones, offering the ability to interact with posts and notifications on the go.
+  
+- **Alexa Skill**: A voice-controlled Alexa skill will be developed to allow users to track their follower count, make new posts, and interact with the platform using voice commands. This will make the platform even more accessible for users who prefer hands-free operation.
+
+These are just a few ideas for future updates, and new features may be added as the project evolves.
+
 ## License
 
 [![License: AGPL v3](https://img.shields.io/badge/AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
+

@@ -28,7 +28,7 @@ export async function UploadPhoto(photo) {
     }
     else {
 
-        console.log("Token não encontrado no arquivo env! Foto não alterada!");
+        console.log("Token não encontrado no arquivo env! Foto não enviada!");
 
     }
 

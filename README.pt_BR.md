@@ -14,6 +14,7 @@ A aplicação utiliza tecnologias modernas para garantir segurança e uma experi
 
 - No **backend**, implementado com Node.js e Sequelize, foram adotadas práticas avançadas de segurança, incluindo autenticação JWT com dois tokens, hash de senhas e outras medidas, oferecendo uma camada extra de proteção para os usuários.
 - No **frontend**, construído com React, a interface é responsiva, permite o upload de imagens usando a API do ImgBB e oferece suporte a temas claro e escuro para uma experiência personalizada.
+- Integração com **Docker**: O projeto inclui uma solução baseada em Docker, permitindo que toda a aplicação (frontend, backend e banco de dados) seja executada de forma integrada em containers isolados. Isso garante um ambiente de desenvolvimento e implantação consistente, facilitando a configuração e melhorando a manutenibilidade.
 
 Esse projeto reflete o aprendizado e a prática com tecnologias de desenvolvimento modernas para criar uma rede social robusta e segura.
 
@@ -39,7 +40,7 @@ Antes de iniciar, certifique-se de que você possui os seguintes itens instalado
    cd backend
    ```
 
-2. Renomeie o arquivo `.env.example` para `.env` e preencha as variáveis de ambiente conforme as instruções no próprio arquivo.
+2. Renomeie o arquivo `.env.example` para `.env` e preencha as variáveis de ambiente conforme as instruções no próprio arquivo, incluindo a senha do banco de dados.
 
 3. Instale as dependências necessárias:
 
@@ -75,7 +76,10 @@ Antes de iniciar, certifique-se de que você possui os seguintes itens instalado
    cd front
    ```
 
-2. Renomeie o arquivo `.env.example` para `.env` e preencha as variáveis de ambiente conforme necessário.
+2. Renomeie o arquivo `.env.example` para `.env` e preencha as variáveis de ambiente conforme necessário. Caso esteja rodando sem Docker, inclua:
+   ```bash
+   REACT_APP_APIURL = http://localhost:3001
+   ```
 
 3. Instale as dependências do frontend:
 
@@ -92,9 +96,34 @@ Antes de iniciar, certifique-se de que você possui os seguintes itens instalado
    Agora, o frontend estará em execução, e você poderá acessar o projeto através do navegador.
 
 
+#### 3. Executar o Projeto com Docker
+
+Caso prefira utilizar Docker para rodar o projeto, siga os passos abaixo:
+
+1. Certifique-se de ter o Docker e o Docker Compose instalados em sua máquina.
+2. Renomeie o arquivo `.env.example` para `.env` e preencha as variáveis de ambiente conforme as instruções, incluindo a senha do banco de dados.
+3. No arquivo `docker-compose.yml`, verifique se a senha do banco de dados está configurada corretamente, conforme definida no `.env` do backend.
+
+4. No arquivo `.env` do backend, defina:
+
+   ```bash
+   DB_HOST = db 
+   ```
+
+5. No `.env` do frontend, defina:
+   ```bash
+   REACT_APP_APIURL = http://backend:3001
+   ```
+6. No terminal, execute o seguinte comando na raiz do projeto:
+   
+   ```bash
+   docker compose up -d
+   ```
+   
+7. Aguarde até que todos os containers estejam em execução.
+8. O backend estará disponível em `http://localhost:3001` e o frontend em `http://localhost:3000`.
 
 Após esses passos, o projeto estará pronto para uso e testes locais.
-
 
 
 ## Capturas de Tela
@@ -120,3 +149,4 @@ Essas são apenas algumas ideias para futuras atualizações, e novos recursos p
 ## Licença
 
 [![License: AGPL v3](https://img.shields.io/badge/AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
+

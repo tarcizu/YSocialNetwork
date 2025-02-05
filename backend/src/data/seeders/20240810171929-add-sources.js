@@ -1,5 +1,6 @@
 'use strict';
 
+const { Op } = require('sequelize')
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -7,11 +8,6 @@ module.exports = {
 
 
     await queryInterface.bulkInsert('sources', [
-      {
-        name: 'Web Site',
-        createdAt: new Date(),
-        updatedAt: new Date()
-      },
       {
         name: 'Android',
         createdAt: new Date(),
@@ -46,7 +42,7 @@ module.exports = {
   async down(queryInterface, Sequelize) {
 
 
-    await queryInterface.bulkDelete('sources', null, {});
+    await queryInterface.bulkDelete('sources', { name: { [Op.in]: ['Android', 'Iphone', 'Windows', 'Mac OS X', 'Alexa'] } }, {});
 
   }
 };

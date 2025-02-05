@@ -1,0 +1,43 @@
+services:
+  db:
+    image: postgres:12.22
+    container_name: db
+    restart: always
+    hostname: db
+    environment:
+      POSTGRES_PASSWORD: # Use the same password set in the backend .env file
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    
+  backend:
+    build: ./backend
+    container_name: backend
+    env_file:
+      - ./backend/.env
+    environment:
+      - DB_HOST=db
+    depends_on:
+      - db
+    ports:
+      - "3001:3001"
+    restart: on-failure
+    entrypoint: ["/bin/sh","-c","sleep 10 && npm run setup && npm start"]
+  front:
+    stdin_open: true
+    build: ./front
+    container_name: frontend
+    env_file:
+      - ./front/.env
+    depends_on:
+      - backend
+      - db
+    ports:
+      - "3000:80"
+    restart: on-failure
+    entrypoint: ["nginx","-g","daemon off;"]
+  
+
+volumes:
+  postgres_data:

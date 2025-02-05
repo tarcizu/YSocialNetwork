@@ -1,6 +1,6 @@
 {
   "name": "Y Social Network",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "main": "index.js",
   "scripts": {
     "start": "node ./src/index.js",
@@ -9,7 +9,7 @@
     "migrate": "npx sequelize-cli db:migrate",
     "createdb": "npx sequelize-cli db:create",
     "seed": "npx sequelize-cli db:seed:all",
-    "setup": "npx sequelize-cli db:create && npx sequelize-cli db:migrate"
+    "setup": "npx sequelize-cli db:create || true && npx sequelize-cli db:migrate"
   },
   "keywords": [],
   "author": "Tarcizo Brito",
